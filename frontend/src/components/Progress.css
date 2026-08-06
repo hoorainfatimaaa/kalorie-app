@@ -1,0 +1,249 @@
+.progress-section {
+    width: 100%;
+    max-width: 1200px;
+    background: #FFFFFF;
+    border-radius: 15px;
+    padding: 18px 22px;
+    margin: 0 auto 45px auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.progress-section h2 {
+    color: #1F3C4D;
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.p-progress-charts {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.p-main-chart-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #F8F6F1;
+    border-radius: 10px;
+    padding: 14px;
+    transition: 0.25s;
+}
+
+.p-main-chart-card:hover {
+    transform: translateY(-2px);
+}
+
+.p-macro-charts {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.p-macro-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #F8F6F1;
+    border-radius: 10px;
+    padding: 10px 12px;
+    gap: 6px;
+    transition: 0.25s;
+}
+
+.p-macro-card:hover {
+    transform: translateY(-2px);
+}
+
+.p-macro-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.p-macro-card h3 {
+    color: #1F3C4D;
+    font-size: 15px;
+    margin-top: 6px;
+    margin-bottom: 2px;
+}
+
+.p-macro-card p {
+    color: #4F8F8B;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.donut-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.donut-track {
+    stroke: #D9D9D9;
+}
+
+.donut-fill {
+    transition: stroke-dashoffset 0.6s ease;
+}
+
+.donut-center {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.donut-value {
+    color: #1F3C4D;
+    font-size: 15px;
+    font-weight: 700;
+}
+.p-macro-card .donut-value {
+    font-size: 13px;
+}
+
+.donut-label {
+    color: #4F8F8B;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.p-remaining-calories {
+    color: #7BAE7F;
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 12px;
+}
+
+.p-remaining-text {
+    display: block;
+    margin-top: 2px;
+    color: #666;
+    font-size: 13px;
+}
+
+.progress-section.compact {
+    max-width: none;
+    height: 100%;
+    padding: 12px 14px;
+    margin-bottom: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.progress-section.compact h2 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.progress-section.compact .p-progress-charts {
+    flex-direction: column;
+    gap: 10px;
+}
+
+.progress-section.compact .p-main-chart-card,
+.progress-section.compact .p-macro-card {
+    width: 100%;
+}
+
+.progress-section.compact .p-main-chart-card {
+    padding: 8px;
+}
+
+.progress-section.compact .p-macro-charts {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+}
+
+.progress-section.compact .p-macro-card {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 3px;
+    padding: 6px 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.progress-section.compact .p-macro-info {
+    align-items: center;
+    text-align: center;
+}
+
+.progress-section.compact .p-macro-card h3 {
+    font-size: 11px;
+    margin-top: 0;
+    margin-bottom: 1px;
+    white-space: nowrap;
+}
+
+.progress-section.compact .p-macro-card p {
+    font-size: 10px;
+}
+
+.progress-section.compact .donut-value {
+    font-size: 13px;
+}
+
+.progress-section.compact .donut-label {
+    font-size: 8px;
+}
+
+.progress-section.compact .p-remaining-calories {
+    font-size: 15px;
+    margin-top: 6px;
+}
+
+.progress-section.compact .p-remaining-text {
+    font-size: 11px;
+}
+
+.donut-glow {
+    border-radius: 50%;
+    box-shadow: 
+    0 0 0 4px rgba(217, 83, 79, 0.15), 
+    0 0 12px rgba(217, 83, 79, 0.35);
+    animation: donut-pulse 2s ease-in-out infinite;
+}
+
+@keyframes donut-pulse {
+    0%, 100% {
+        box-shadow: 
+        0 0 0 4px rgba(217, 83, 79, 0.15), 
+        0 0 12px rgba(217, 83, 79, 0.35);
+    }
+    50% {
+        box-shadow: 
+        0 0 0 7px rgba(217, 83, 79, 0.1), 
+        0 0 18px rgba(217, 83, 79, 0.5);
+    }
+}
+
+@media (max-width: 900px) {
+    .progress-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 650px) {
+    .progress-grid {
+        grid-template-columns: 1fr;
+    }
+}

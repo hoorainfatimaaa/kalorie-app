@@ -1,0 +1,318 @@
+.meal-history{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:16px 18px;
+
+    height:100%;
+
+    overflow:hidden;
+
+    display:flex;
+
+    flex-direction:column;
+
+    box-sizing:border-box;
+
+}
+
+.meal-history h2 {
+
+    font-size: 16px;
+
+    margin: 0 0 12px 0;
+
+    color: #1F3C4D;
+
+    font-weight: 700;
+
+}
+
+
+
+
+.meal-list{
+
+    flex: 1;
+
+    min-height: 0;
+
+    overflow-y:auto;
+
+    padding-right: 4px;
+
+}
+
+.meal-list::-webkit-scrollbar {
+
+    width: 5px;
+
+}
+
+.meal-list::-webkit-scrollbar-thumb {
+
+    background: #E5E7EB;
+
+    border-radius: 10px;
+
+}
+
+.meal-list > p {
+
+    color: #6B7280;
+
+    font-size: 13px;
+
+    text-align: center;
+
+    margin-top: 20px;
+
+}
+
+
+.meal-card{
+
+    background: linear-gradient(135deg, #F8F6F1 0%, #F1F7F2 100%);
+
+    border: 1px solid #EDEAE2;
+
+    border-left: 4px solid #7BAE7F;
+
+    padding:12px 14px;
+
+    border-radius:12px;
+
+    margin-bottom:10px;
+
+    transition: 0.2s ease;
+
+}
+
+.meal-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 4px 10px rgba(31, 60, 77, 0.08);
+
+    border-left-color: #4F8F8B;
+
+}
+
+.meal-card:last-child {
+
+    margin-bottom: 0;
+
+}
+
+
+.meal-card-top {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 6px;
+
+}
+
+.meal-card h3{
+
+    margin:0;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: #1F3C4D;
+
+    text-transform: capitalize;
+
+}
+
+.meal-card > p {
+
+    display: inline-block;
+
+    margin: 0 0 8px 0;
+
+    padding: 2px 10px;
+
+    background: #E8F5EE;
+
+    color: #146E43;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    border-radius: 20px;
+
+}
+
+
+.meal-macros {
+
+    display: flex;
+
+    gap: 6px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 6px;
+
+}
+
+.meal-card span{
+
+    display:inline-flex;
+
+    align-items: center;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    padding: 3px 8px;
+
+    border-radius: 20px;
+
+}
+
+.meal-card span:nth-of-type(1) {
+
+    background: #E3F0EF;
+
+    color: #23867B;
+
+}
+
+.meal-card span:nth-of-type(2) {
+
+    background: #FBF0DA;
+
+    color: #B9861F;
+
+}
+
+.meal-card span:nth-of-type(3) {
+
+    background: #FBE7E5;
+
+    color: #C1544C;
+
+}
+
+
+.meal-card small{
+
+    display:block;
+
+    margin-top:6px;
+
+    color:#9AA0A6;
+
+    font-size: 10.5px;
+
+    letter-spacing: 0.2px;
+
+}
+.meal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 18px;
+    height: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1;
+
+    transition: transform 0.2s ease;
+}
+
+.delete-btn:hover {
+    transform: translateY(-2px);
+}
+
+.delete-btn:active {
+    transform: translateY(0);
+}
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,0.25);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1000;
+}
+
+
+.confirm-box {
+    background: #FCFAF5;
+
+    padding: 25px;
+
+    border-radius: 18px;
+
+    width: 300px;
+
+    text-align: center;
+
+    box-shadow: 0 15px 40px rgba(31,58,95,0.2);
+}
+
+
+.confirm-box p {
+    margin-bottom: 20px;
+    color: #2B2B2B;
+}
+
+
+.confirm-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+
+.cancel-btn,
+.confirm-delete-btn {
+
+    border: none;
+    padding: 8px 18px;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+}
+
+
+.cancel-btn {
+    background: #4F7C82;
+    color: white;
+}
+
+
+.confirm-delete-btn {
+    background: #4F7C82;
+    color: white;
+}

@@ -1,0 +1,206 @@
+.welcome-page {
+    min-height: 100vh;
+    width: 100%;
+    background-image: url("../assets/images/bg_image.jpg");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    padding: 0 8%;
+}
+
+.hero-content {
+    max-width: 750px;
+    display: grid;
+    grid-template-columns: 60px auto; 
+    column-gap: 70px;
+    row-gap: 18px;
+    align-items: center;
+}
+
+
+.logo {
+    grid-column: 1;
+    grid-row: 1;
+    width: 50px;
+    height: 50px;
+}
+
+.hero-content h1 {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    font-size: 60px;
+    line-height: 1.05;
+    font-weight: 700;
+    color: #1F3A5F;
+    text-align: left;
+}
+
+.hero-text {
+    grid-column: 2;
+    grid-row: 2;
+    max-width: 560px;
+}
+.welcome-description {
+    width: 500px;
+    text-align: left;
+    margin: 0;
+    color: #262525;
+    margin-bottom: 30px;
+
+    font-size: 18px;     
+    line-height: 1.8;     
+}
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+}
+
+.button-row a {
+    text-decoration: none;
+    flex: 1;
+}
+
+button {
+    width: 100%;
+    padding: 16px 34px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    margin: 0;
+}
+
+button.primary {
+    background: #1F3A5F;
+    color: white;
+}
+
+button.primary:hover {
+    background: #16294A;
+}
+
+button.secondary {
+    background: transparent;
+    border: 2px solid #1F3A5F;
+    color: #1F3A5F;
+}
+
+button.secondary:hover {
+    background: rgba(31,58,95,0.08);
+}
+
+@media (max-width: 1024px) {
+
+    .welcome-page {
+        padding: 0 6%;
+        justify-content: center;
+    }
+
+    .hero-content {
+        max-width: 650px;
+        column-gap: 40px;
+    }
+
+    .hero-content h1 {
+        font-size: 48px;
+    }
+
+    .welcome-description {
+        width: 100%;
+        max-width: 500px;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .welcome-page {
+        padding: 40px 24px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .hero-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 20px;
+        max-width: 100%;
+    }
+
+    .logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .hero-content h1 {
+        font-size: 38px;
+        text-align: center;
+        line-height: 1.2;
+    }
+
+    .hero-text {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .welcome-description {
+        width: 100%;
+        max-width: 100%;
+        text-align: center;
+        font-size: 16px;
+        line-height: 1.7;
+        margin-bottom: 25px;
+    }
+
+    .button-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .button-row a {
+        width: 100%;
+    }
+
+    button {
+        padding: 15px;
+        font-size: 16px;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .welcome-page {
+        padding: 25px 18px;
+    }
+
+    .logo {
+        width: 60px;
+        height: 60px;
+    }
+
+    .hero-content h1 {
+        font-size: 30px;
+    }
+
+    .welcome-description {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    button {
+        font-size: 15px;
+        padding: 14px;
+    }
+
+}

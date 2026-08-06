@@ -1,0 +1,224 @@
+.weekly-plan-card {
+
+    background:var(--card-bg);
+
+    border-radius:16px;
+
+    padding:20px;
+
+    width:100%;
+
+    height:100%;
+
+    box-sizing:border-box;
+
+    box-shadow:0 8px 30px rgba(31,58,95,.08);
+
+    margin-top:0;  
+
+    overflow-y:auto;
+
+}
+
+.weekly-plan-header {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 20px;
+
+}
+
+
+.weekly-plan-header h2 {
+
+    font-size: 22px;
+    font-weight: 700;
+    color: #1F3A5F;
+    margin: 0;
+
+}
+
+
+
+.day-tabs {
+
+    display: flex;
+    gap: 10px;
+
+    overflow-x: auto;
+
+    padding-bottom: 15px;
+
+}
+
+
+
+.day-tabs button {
+
+    border: none;
+
+    background: #EAF1E7;
+
+    color: #5C7A54;
+
+    padding: 10px 18px;
+
+    border-radius: 25px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: 0.3s;
+
+}
+
+
+
+.day-tabs button:hover {
+
+    background: #D8E6D2;
+
+}
+
+
+
+.day-tabs .active-day {
+
+    background: #5C7A54;
+
+    color: white;
+
+}
+
+
+
+.day-meals {
+
+    margin-top: 20px;
+
+    display: grid;
+
+    grid-template-columns: repeat(2,1fr);
+
+    gap: 18px;
+
+}
+
+
+
+
+.meal-plan-item {
+
+
+    background: #F5F7F2;
+
+    border-radius: 15px;
+
+    padding: 18px;
+
+    border-left: 5px solid #5C7A54;
+
+
+}
+
+
+
+.meal-plan-item h3 {
+
+    font-size: 14px;
+
+    color: #5C7A54;
+
+    margin-bottom: 8px;
+
+    text-transform: uppercase;
+    font-weight: 700;
+
+}
+
+
+
+.meal-plan-item h4 {
+
+    margin: 5px 0;
+
+    font-size: 18px;
+
+    color:#1F3A5F;
+
+}
+
+
+
+.meal-plan-item p {
+
+    color:#666;
+
+    font-size:14px;
+
+    line-height:1.5;
+
+}
+
+
+
+.meal-plan-item div {
+
+    display:inline-block;
+
+    margin-top:12px;
+
+    margin-right:10px;
+
+    padding:6px 12px;
+
+    background:#EAF1E7;
+
+    border-radius:20px;
+
+    font-size:13px;
+
+    color:#5C7A54;
+
+}
+
+
+
+
+.weekly-plan-card > p {
+
+    color:#777;
+
+    text-align:center;
+
+    padding:30px;
+
+    font-size:15px;
+
+}
+
+
+
+
+@media(max-width:768px){
+
+
+    .day-meals{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .day-tabs button{
+
+        padding:8px 14px;
+
+    }
+
+
+}

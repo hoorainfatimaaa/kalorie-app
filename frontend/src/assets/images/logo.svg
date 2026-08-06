@@ -1,0 +1,25 @@
+<svg width="240" height="240" viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Circle badge — sage green fill sampled to match the produce background photo, navy outline for clear distinction -->
+  <circle cx="140" cy="120" r="100" fill="#FCFAF5" stroke="#1F3A5F" stroke-width="4"/>
+
+  <!-- Monogram "K" drawn as rounded strokes -->
+  <path d="M107 72 L107 168" stroke="#1F3A5F" stroke-width="20" stroke-linecap="round"/>
+  <path d="M112 122 L172 72" stroke="#1F3A5F" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M112 122 L178 172" stroke="#1F3A5F" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Leaf accent: deep green body + warm avocado-flesh gold tip, echoing the photo's avocado tones -->
+  <path d="M140 122
+           C 148 112, 159 109, 168 112
+           C 161 121, 150 124, 140 122 Z"
+        fill="#146E43"/>
+  <path d="M168 112
+           C 172 114, 175 117, 175 120
+           C 172 120, 168 118, 165 115
+           C 166 114, 167 113, 168 112 Z"
+        fill="#E4B363"/>
+  <path d="M141 121 L163 116" stroke="#0F5733" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Small teal AI accent dot -->
+  <circle cx="178" cy="120" r="5" fill="#23867B"/>
+</svg>
