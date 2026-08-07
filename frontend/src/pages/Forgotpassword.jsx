@@ -36,7 +36,7 @@ function ForgotPassword() {
 
         try {
 
-            const response = await fetch("http://127.0.0.1:5000/forgot-password", {
+            const response = await fetch("https://kalorie-app.onrender.com/forgot-password", {
 
                 method: "POST",
 

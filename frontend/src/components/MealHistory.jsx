@@ -13,7 +13,7 @@ function MealHistory({mealUpdated,setProgressRefresh}){
         const token = localStorage.getItem("token");
 
         const response = await fetch(
-            `http://127.0.0.1:5000/meals/${mealId}`,
+            `https://kalorie-app.onrender.com/meals/${mealId}`,
             {
                 method: "DELETE",
                 headers: {
@@ -50,7 +50,7 @@ function MealHistory({mealUpdated,setProgressRefresh}){
 
                 const response =
                 await fetch(
-                "http://127.0.0.1:5000/meal-history",
+                "https://kalorie-app.onrender.com/meal-history",
                 {
                     headers:{
                         Authorization:

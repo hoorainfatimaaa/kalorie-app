@@ -27,7 +27,7 @@ function WeeklyMealPlan(){
 
 
                 const response = await fetch(
-                    "http://127.0.0.1:5000/diet-plan",
+                    "https://kalorie-app.onrender.com/diet-plan",
                     {
                         headers:{
                             Authorization:`Bearer ${token}`

@@ -44,7 +44,7 @@ function Aiassistant() {
 
             const token = localStorage.getItem("token");
 
-            const response = await fetch("http://127.0.0.1:5000/chat/history", {
+            const response = await fetch("https://kalorie-app.onrender.com/chat/history", {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -160,7 +160,7 @@ else {
             }
 
             const response = await fetch(
-                "http://127.0.0.1:5000/chat",
+                "https://kalorie-app.onrender.com/chat",
                 {
                     method: "POST",
 
@@ -328,7 +328,7 @@ const stopRecording = () => {
         try {
 
             const response = await fetch(
-                "http://127.0.0.1:5000/chat/audio",
+                "https://kalorie-app.onrender.com/chat/audio",
                 {
                     method: "POST",
                     headers: {
@@ -369,7 +369,7 @@ if (
 if (data.audio) {
 
     const audio = new Audio(
-        `http://127.0.0.1:5000/uploads/${data.audio}`
+        `https://kalorie-app.onrender.com/uploads/${data.audio}`
     );
 
     audio.play();
@@ -410,7 +410,7 @@ const speakText = async(text)=>{
 
 
         const response = await fetch(
-        "http://127.0.0.1:5000/chat/speak",
+        "https://kalorie-app.onrender.com/chat/speak",
         {
             method:"POST",
 
@@ -431,7 +431,7 @@ const speakText = async(text)=>{
         if(data.audio){
 
             const audio = new Audio(
-            `http://127.0.0.1:5000/uploads/${data.audio}`
+            `https://kalorie-app.onrender.com/uploads/${data.audio}`
             );
 
             audio.play();

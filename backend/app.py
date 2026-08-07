@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 app.config.from_object(Config)
 
-CORS(app)
+CORS(app, origins=["https://kalorie-app-sage.vercel.app"])
 db.init_app(app)
 jwt = JWTManager(app)
 app.register_blueprint(auth)

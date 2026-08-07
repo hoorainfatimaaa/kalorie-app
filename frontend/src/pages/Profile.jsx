@@ -35,7 +35,7 @@ function Profile() {
                 const token = localStorage.getItem("token");
 
                 const response = await fetch(
-                    "http://127.0.0.1:5000/profile",
+                    "https://kalorie-app.onrender.com/profile",
                     {
                         method: "GET",
                         headers: {
@@ -81,7 +81,7 @@ function Profile() {
             const token = localStorage.getItem("token");
 
             const response = await fetch(
-                "http://127.0.0.1:5000/profile",
+                "https://kalorie-app.onrender.com/profile",
                 {
                     method: "PUT",
                     headers: {
