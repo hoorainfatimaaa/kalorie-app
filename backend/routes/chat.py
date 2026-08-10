@@ -366,10 +366,13 @@ FITNESS_GOAL_ALIASES = {
     "maintenance": "maintenance",
 }
 
-FALLBACK_ELIGIBLE_INTENTS = {
-    "update_profile",
-    "general_chat",
-    "show_profile",
+
+FALLBACK_EXCLUDED_INTENTS = {
+    "meal_log",
+    "meal_update",
+    "meal_delete",
+    "save_diet_plan",
+    "diet_plan_confirmation",
 }
 
 _QUESTION_START = re.compile(
@@ -462,7 +465,74 @@ def extract_profile_updates_from_text(message, user):
             updates["allergies"] = ", ".join(remaining)
 
     return updates
+CONFIRMATION_WORDS = {
+    "yes", "yeah", "yep", "yup", "sure", "ok", "okay", "confirm",
+    "correct", "affirmative", "do it", "go ahead", "please do",
+}
 
+
+def is_bare_confirmation(message):
+    text = (message or "").strip().lower().strip(".!")
+    return text in CONFIRMATION_WORDS
+
+
+_PENDING_NUMERIC_PATTERNS = [
+    ("weight", re.compile(r"weight\s+to\s+(\d+(?:\.\d+)?)\s*kg", re.I)),
+    ("height", re.compile(r"height\s+to\s+(\d+(?:\.\d+)?)\s*cm", re.I)),
+    ("age", re.compile(r"age\s+to\s+(\d+)\b", re.I)),
+]
+
+_PENDING_ACTIVITY_PATTERN = re.compile(
+    r"activity level to\s+([a-z ]+?)(?:\s*[\(\?]|$)", re.I
+)
+_PENDING_GOAL_PATTERN = re.compile(
+    r"(?:fitness )?goal to\s+([a-z ]+?)(?:\s*[\(\?]|$)", re.I
+)
+
+
+def extract_pending_update_from_history(chat_history):
+    """
+    A bare 'yes'/'confirm' message carries no field or value itself.
+    Scan the chat history backwards for the most recent AI message
+    that proposed a specific profile change (e.g. "change your weight
+    to 100 kg?") and pull the field/value it was proposing out of
+    THAT message instead.
+    """
+    if not chat_history:
+        return {}
+
+    for chat_msg in reversed(chat_history):
+        if chat_msg.sender != "ai":
+            continue
+
+        try:
+            parsed = json.loads(chat_msg.message)
+            text = parsed.get("reply", "") if isinstance(parsed, dict) else chat_msg.message
+        except Exception:
+            text = chat_msg.message
+
+        if not text:
+            continue
+
+        lower = text.lower()
+
+        for field, pattern in _PENDING_NUMERIC_PATTERNS:
+            m = pattern.search(lower)
+            if m:
+                return {field: m.group(1)}
+
+        m = _PENDING_ACTIVITY_PATTERN.search(lower)
+        if m:
+            return {"activity_level": m.group(1).strip()}
+
+        m = _PENDING_GOAL_PATTERN.search(lower)
+        if m:
+            return {"fitness_goal": m.group(1).strip()}
+
+    
+        break
+
+    return {}
 
 def apply_profile_update(ai_reply, user, message="", chat_history=None):
     """
@@ -503,14 +573,16 @@ def apply_profile_update(ai_reply, user, message="", chat_history=None):
     valid_updates, rejected_fields = validate_profile_updates(raw_updates or {})
 
     used_fallback = False
+    if not valid_updates and intent not in FALLBACK_EXCLUDED_INTENTS:
 
-
-    if not valid_updates and intent in FALLBACK_ELIGIBLE_INTENTS:
-        fallback_raw = extract_profile_updates_from_text(message, user)
+        if is_bare_confirmation(message):
+           
+            fallback_raw = extract_pending_update_from_history(chat_history)
+        else:
+            fallback_raw = extract_profile_updates_from_text(message, user)
 
         if fallback_raw:
             fallback_valid, _ = validate_profile_updates(fallback_raw)
-
             if fallback_valid:
                 valid_updates = fallback_valid
                 used_fallback = True
