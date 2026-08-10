@@ -17,8 +17,10 @@ from routes.diet_plan import diet
 app = Flask(__name__)
 
 app.config.from_object(Config)
-
-CORS(app, origins=["https://kalorie-app-sage.vercel.app"])
+CORS(app, origins=[
+    "http://localhost:5173",
+    "https://kalorie-app-sage.vercel.app"
+])
 db.init_app(app)
 jwt = JWTManager(app)
 app.register_blueprint(auth)

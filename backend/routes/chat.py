@@ -11,6 +11,7 @@ from models.user import User
 from models.diet_plan import DietPlan
 from models.temp_diet_plan import TempDietPlan
 from services.openai_service import ask_openai, transcribe,generate_audio
+from services.nutrition_service import calculate_calorie_goal, calculate_macro_goals
 from sqlalchemy import func
 from datetime import date
 import json
@@ -20,6 +21,180 @@ def clean_text(value):
         return value.replace("\x00", "")
     return value
 today = date.today()
+
+DISPLAY_INTENTS = {
+    "show_profile",
+    "show_progress",
+    "calorie_status",
+    "show_meal_history",
+    "show_weekly_plan",
+}
+
+
+def user_has_complete_profile(user):
+    """calculate_bmr/calculate_tdee need these fields; bail out safely if any are missing."""
+    return all([
+        user is not None,
+        user.age is not None,
+        user.height is not None,
+        user.weight is not None,
+        user.gender is not None,
+        user.fitness_goal is not None,
+    ])
+
+
+def get_today_totals(user_id):
+    """Sum calories/protein/carbs/fat for this user's meals logged today."""
+    result = db.session.query(
+        func.coalesce(func.sum(Meal.calories), 0),
+        func.coalesce(func.sum(Meal.protein), 0),
+        func.coalesce(func.sum(Meal.carbs), 0),
+        func.coalesce(func.sum(Meal.fat), 0),
+    ).filter(
+        Meal.user_id == user_id,
+        func.date(Meal.created_at) == date.today()
+    ).first()
+
+    return {
+        "calories": result[0] or 0,
+        "protein": result[1] or 0,
+        "carbs": result[2] or 0,
+        "fat": result[3] or 0,
+    }
+
+
+def build_profile_data(user):
+    return {
+        "full_name": user.full_name,
+        "email": user.email,
+        "age": user.age,
+        "gender": user.gender,
+        "height": user.height,
+        "weight": user.weight,
+        "activity_level": user.activity_level,
+        "fitness_goal": user.fitness_goal,
+        "dietary_preferences": user.dietary_preferences,
+        "allergies": user.allergies,
+    }
+
+
+def build_progress_data(user, user_id):
+    calorie_goal = calculate_calorie_goal(user)
+    macros = calculate_macro_goals(user)
+    consumed = get_today_totals(user_id)
+
+    return {
+        "calorie_goal": calorie_goal,
+        "calories_consumed": consumed["calories"],
+        "calories_remaining": max(calorie_goal - consumed["calories"], 0),
+        "protein_goal": macros["protein_goal"],
+        "protein_consumed": consumed["protein"],
+        "protein_remaining": max(macros["protein_goal"] - consumed["protein"], 0),
+        "carbs_goal": macros["carbs_goal"],
+        "carbs_consumed": consumed["carbs"],
+        "carbs_remaining": max(macros["carbs_goal"] - consumed["carbs"], 0),
+        "fat_goal": macros["fat_goal"],
+        "fat_consumed": consumed["fat"],
+        "fat_remaining": max(macros["fat_goal"] - consumed["fat"], 0),
+    }
+
+
+def build_calorie_status_data(user, user_id):
+    calorie_goal = calculate_calorie_goal(user)
+    consumed = get_today_totals(user_id)["calories"]
+
+    if consumed > calorie_goal:
+        exceeded = True
+        exceeded_by = consumed - calorie_goal
+        calories_remaining = 0
+    else:
+        exceeded = False
+        exceeded_by = 0
+        calories_remaining = calorie_goal - consumed
+
+    return {
+        "calorie_goal": calorie_goal,
+        "calories_consumed": consumed,
+        "calories_remaining": calories_remaining,
+        "exceeded": exceeded,
+        "exceeded_by": exceeded_by,
+    }
+
+
+def build_meal_history_data(user_id, limit=20):
+    """Most recent logged meals for this user, from the database (not chat history)."""
+    meals = (
+        Meal.query
+        .filter_by(user_id=user_id)
+        .order_by(Meal.created_at.desc())
+        .limit(limit)
+        .all()
+    )
+
+    return {
+        "meals": [
+            {
+                "id": m.id,
+                "meal_name": m.meal_name,
+                "portion": m.portion,
+                "calories": m.calories,
+                "protein": m.protein,
+                "carbs": m.carbs,
+                "fat": m.fat,
+                "created_at": m.created_at.isoformat() if m.created_at else None,
+            }
+            for m in meals
+        ]
+    }
+
+
+def apply_display_intent(ai_reply, user, user_id, current_plan):
+    """
+    If ai_reply's intent is one of the new read-only display intents,
+    attach backend-sourced `data` to it (and override `reply` for the
+    no-data edge cases). Mutates and returns ai_reply. No-op otherwise.
+    """
+    if not isinstance(ai_reply, dict):
+        return ai_reply
+
+    intent = ai_reply.get("intent")
+    if intent not in DISPLAY_INTENTS:
+        return ai_reply
+
+    if intent == "show_profile":
+        ai_reply["data"] = build_profile_data(user)
+
+    elif intent == "show_progress":
+        if not user_has_complete_profile(user):
+            ai_reply["reply"] = (
+                "Please complete your profile (age, height, weight, gender, "
+                "and fitness goal) so I can calculate your progress."
+            )
+            ai_reply["data"] = None
+        else:
+            ai_reply["data"] = build_progress_data(user, user_id)
+
+    elif intent == "calorie_status":
+        if not user_has_complete_profile(user):
+            ai_reply["reply"] = (
+                "Please complete your profile (age, height, weight, gender, "
+                "and fitness goal) so I can calculate your calorie status."
+            )
+            ai_reply["data"] = None
+        else:
+            ai_reply["data"] = build_calorie_status_data(user, user_id)
+
+    elif intent == "show_meal_history":
+        ai_reply["data"] = build_meal_history_data(user_id)
+
+    elif intent == "show_weekly_plan":
+        ai_reply["data"] = {"plan": current_plan}
+        if not current_plan:
+            ai_reply["reply"] = "You don't have a saved weekly meal plan yet."
+
+    return ai_reply
+
+
 @chat.route("/chat", methods=["POST"])
 @jwt_required()
 def chat_with_ai():
@@ -111,6 +286,8 @@ def chat_with_ai():
         chat_history=chat_history,
         current_plan=current_plan
 )  
+        ai_reply = apply_display_intent(ai_reply, user, user_id, current_plan)
+
         ai_message = ChatMessage(
         user_id=user_id,
         sender="ai",
@@ -275,7 +452,7 @@ def chat_with_ai():
 
                 db.session.add(temp)
                 db.session.commit()
-                    
+
         return jsonify({
                 "success": True,
                 "user_id": user_id,
@@ -426,6 +603,8 @@ def chat_audio():
             chat_history=chat_history,
             current_plan=current_plan
         )
+
+        ai_reply = apply_display_intent(ai_reply, user, user_id, current_plan)
 
         ai_message = ChatMessage(
     user_id=user_id,

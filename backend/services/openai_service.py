@@ -138,6 +138,123 @@ Rules:
 INTENT CLASSIFICATION
 
 Determine exactly ONE intent.
+0. CHAT DISPLAY / INFORMATION COMMANDS
+
+Use these intents when the user explicitly asks to SEE information
+from their account.
+
+show_profile
+
+Use when the user wants to see their personal profile or information
+stored about them.
+
+Examples:
+
+- "Show my profile"
+- "What are my profile details?"
+- "What information do you have about me?"
+- "Show my personal information"
+- "What is my current weight?"
+- "What is my fitness goal?"
+
+Return:
+
+{
+  "intent": "show_profile",
+  "reply": ""
+}
+
+
+show_progress
+
+Use when the user wants to see their current nutrition or calorie
+progress.
+
+Examples:
+
+- "Show my progress"
+- "How am I doing today?"
+- "How many calories have I eaten today?"
+- "How many calories do I have left?"
+- "Show today's progress"
+- "How are my macros today?"
+
+Return:
+
+{
+  "intent": "show_progress",
+  "reply": ""
+}
+
+
+show_meal_history
+
+Use when the user explicitly wants to SEE their recorded meal history.
+
+Examples:
+
+- "Show my meal history"
+- "Show my meals"
+- "Show all my logged meals"
+- "What meals have I logged?"
+- "Show my recent meals"
+
+Return:
+
+{
+  "intent": "show_meal_history",
+  "reply": ""
+}
+
+
+show_weekly_plan
+
+Use when the user wants to SEE their existing weekly diet plan.
+
+Examples:
+
+- "Show my weekly plan"
+- "Show my diet plan"
+- "What is my meal plan?"
+- "Show this week's plan"
+- "What am I supposed to eat today?"
+- "Show today's planned meals"
+
+IMPORTANT:
+
+If the user already has a saved/current diet plan and is asking
+to view it, use show_weekly_plan.
+
+Do NOT generate a new plan unless the user explicitly asks for a
+new plan.
+
+Return:
+
+{
+  "intent": "show_weekly_plan",
+  "reply": ""
+}
+
+
+calorie_status
+
+Use when the user specifically asks about their remaining calorie
+budget or whether they have exceeded their daily calorie target.
+
+Examples:
+
+- "How many calories do I have left?"
+- "How many calories can I still eat?"
+- "Have I exceeded my calorie limit?"
+- "Am I over my calorie goal?"
+- "How many calories are remaining?"
+
+Return:
+
+{
+  "intent": "calorie_status",
+  "reply": ""
+}
 
 1. meal_log
 
@@ -773,6 +890,39 @@ These nutrition values are estimated based on the assumed portion.
 If you know your exact portion size, tell me and I can update the calories and macros.
 
 DIET PLAN MODIFICATION RULES
+VIEWING VS GENERATING INFORMATION
+
+The user may ask to VIEW information that already exists in their
+account.
+
+Viewing existing information is NOT the same as generating new
+information.
+
+Examples:
+
+"Show my weekly plan"
+→ show_weekly_plan
+
+"Create me a weekly plan"
+→ diet_plan_confirmation
+
+"Give me a new diet plan"
+→ diet_plan_confirmation
+
+"Show my profile"
+→ show_profile
+
+"Change my weight to 65 kg"
+→ update_profile
+
+"Show my progress"
+→ show_progress
+
+"How many calories do I have left?"
+→ calorie_status
+
+Never generate a new diet plan when the user only asks to view
+their existing plan.
 
 If the user already has a generated or saved meal plan and requests a modification:
 
@@ -808,7 +958,6 @@ OUTPUT FORMAT
 
 Always return JSON only.
 
-
 Possible intents:
 
 meal_log
@@ -820,6 +969,16 @@ meal_delete
 nutrition_question
 
 meal_history
+
+show_profile
+
+show_progress
+
+show_meal_history
+
+show_weekly_plan
+
+calorie_status
 
 diet_plan_confirmation
 
