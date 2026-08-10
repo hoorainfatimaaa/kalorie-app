@@ -366,7 +366,11 @@ FITNESS_GOAL_ALIASES = {
     "maintenance": "maintenance",
 }
 
-FALLBACK_ELIGIBLE_INTENTS = {"update_profile", "general_chat"}
+FALLBACK_ELIGIBLE_INTENTS = {
+    "update_profile",
+    "general_chat",
+    "show_profile",
+}
 
 _QUESTION_START = re.compile(
     r"^(what|why|how|is|are|does|do|can|should|which|when|where)\b"
@@ -460,7 +464,7 @@ def extract_profile_updates_from_text(message, user):
     return updates
 
 
-def apply_profile_update(ai_reply, user, message=""):
+def apply_profile_update(ai_reply, user, message="", chat_history=None):
     """
     Applies profile changes to the authenticated user's row.
 
@@ -491,19 +495,65 @@ def apply_profile_update(ai_reply, user, message=""):
 
     intent = ai_reply.get("intent")
     is_declared_update = intent == "update_profile"
+    print("PROFILE DEBUG - AI INTENT:", intent)
+    print("PROFILE DEBUG - MESSAGE:", message)
+    print("PROFILE DEBUG - AI UPDATES:", ai_reply.get("updates"))
 
     raw_updates = ai_reply.get("updates") if is_declared_update else None
     valid_updates, rejected_fields = validate_profile_updates(raw_updates or {})
 
     used_fallback = False
+
+
     if not valid_updates and intent in FALLBACK_ELIGIBLE_INTENTS:
         fallback_raw = extract_profile_updates_from_text(message, user)
+
         if fallback_raw:
             fallback_valid, _ = validate_profile_updates(fallback_raw)
+
             if fallback_valid:
                 valid_updates = fallback_valid
                 used_fallback = True
 
+    if not valid_updates and message.strip().lower() in {
+    "yes",
+    "yes please",
+    "yeah",
+    "yep",
+    "sure",
+    "okay",
+    "ok",
+    "confirm",
+    "confirmed"
+}:
+        if chat_history:
+            for previous_message in reversed(chat_history):
+
+                if previous_message.sender != "ai":
+                    continue
+
+                try:
+                    previous_ai = json.loads(previous_message.message)
+
+                    if not isinstance(previous_ai, dict):
+                        continue
+
+                    previous_updates = previous_ai.get("updates")
+
+                    if previous_updates:
+                        previous_valid, _ = validate_profile_updates(
+                        previous_updates
+                    )
+
+                        if previous_valid:
+                            valid_updates = previous_valid
+                            used_fallback = True
+                            break
+
+                except (json.JSONDecodeError, TypeError):
+                    continue
+    print("PROFILE DEBUG - FALLBACK USED:", used_fallback)
+    print("PROFILE DEBUG - VALID UPDATES:", valid_updates)
     if not is_declared_update and not used_fallback:
         
         return ai_reply
@@ -557,7 +607,11 @@ def apply_profile_update(ai_reply, user, message=""):
                 + ", ".join(missing)
                 + " to calculate your daily calorie and macro targets."
             )
-
+        print("PROFILE UPDATE SUCCESS")
+        print("UPDATED FIELDS:", valid_updates)
+        print("FINAL INTENT:", ai_reply.get("intent"))
+        print("NEW WEIGHT:", user.weight)
+        print("NEW FITNESS GOAL:", user.fitness_goal)
         return ai_reply
 
     if is_declared_update:
@@ -666,9 +720,11 @@ def chat_with_ai():
         current_plan=current_plan,
         nutrition_targets=nutrition_targets
 )
+        print("AI BEFORE PROFILE UPDATE:", ai_reply)
 
-      
-        ai_reply = apply_profile_update(ai_reply, user, message)
+        ai_reply = apply_profile_update(ai_reply, user, message,chat_history)
+
+        print("AI AFTER PROFILE UPDATE:", ai_reply)
 
    
         user = User.query.get(user_id)
@@ -996,9 +1052,8 @@ def chat_audio():
             nutrition_targets=nutrition_targets
         )
 
-        # Profile updates first, then refresh, then everything that
-        # depends on the current profile — same ordering as /chat.
-        ai_reply = apply_profile_update(ai_reply, user, transcript)
+     
+        ai_reply = apply_profile_update(ai_reply, user, transcript,chat_history)
 
         user = User.query.get(user_id)
 

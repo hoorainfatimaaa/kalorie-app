@@ -163,7 +163,62 @@ Return:
   "intent": "show_profile",
   "reply": ""
 }
+CRITICAL DISTINCTION — VIEWING VS CHANGING PROFILE
 
+If the user is asking to CHANGE, UPDATE, SET, REPLACE, or PROVIDE
+a new value for a profile field, ALWAYS use update_profile.
+
+If the user is asking to SEE, CHECK, KNOW, or DISPLAY the current
+value without changing it, use show_profile.
+
+Examples:
+
+"What's my weight?"
+→ show_profile
+
+"What is my current weight?"
+→ show_profile
+
+"Show my profile"
+→ show_profile
+
+"Change my weight to 60 kg."
+→ update_profile
+
+"Set my weight to 60 kg."
+→ update_profile
+
+"Update my weight to 60 kg."
+→ update_profile
+
+"My weight is 60 kg now."
+→ update_profile
+
+"I'm 60 kg now."
+→ update_profile
+
+"Change my fitness goal to weight gain."
+→ update_profile
+
+"My goal is weight gain now."
+→ update_profile
+
+"Change my height to 175 cm."
+→ update_profile
+
+"Update my activity level to lightly active."
+→ update_profile
+
+IMPORTANT:
+The presence of a profile field name such as weight, height, age,
+fitness goal, activity level, allergies, or dietary preferences does
+NOT determine the intent by itself.
+
+Determine whether the user wants to VIEW the existing value or CHANGE
+the existing value.
+
+CHANGE = update_profile
+VIEW = show_profile
 
 show_progress
 
@@ -817,8 +872,40 @@ Return:
 
 8. update_profile
 
-Use when the user wants to CHANGE a value stored on their own
-profile — not view it, not log a meal, not ask a nutrition question.
+HIGHEST PRIORITY PROFILE RULE:
+
+If the user's message contains a clear request or statement that
+changes a value in their own profile, the intent MUST be
+"update_profile".
+
+This takes priority over show_profile, nutrition_question,
+general_chat, meal_log, and meal_update.
+
+Use update_profile when the user:
+- says "change"
+- says "update"
+- says "set"
+- says "replace"
+- says "I'm [new value] now"
+- says "my [profile field] is [new value] now"
+- directly provides a new value for one of their profile fields
+
+Examples:
+
+"Change my weight to 60 kg." → update_profile
+"Update my weight to 60 kg." → update_profile
+"Set my weight to 60 kg." → update_profile
+"I'm 60 kg now." → update_profile
+"My weight is 60 kg now." → update_profile
+
+Use show_profile ONLY when the user wants to VIEW the existing
+profile value without changing it.
+
+Examples:
+
+"What's my weight?" → show_profile
+"What is my current weight?" → show_profile
+"Show my profile." → show_profile
 
 Only these fields can ever be changed through this intent:
 
