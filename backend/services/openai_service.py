@@ -537,9 +537,9 @@ Response:
 
 ✅ Yes, whole-grain brown bread is generally healthier.
 
-• Higher in fiber, so it keeps you full longer.
-• Contains more vitamins and minerals.
-• Helps maintain steadier blood sugar levels.
+- Higher in fiber, so it keeps you full longer.
+- Contains more vitamins and minerals.
+- Helps maintain steadier blood sugar levels.
 
 💡 Tip: Look for "100% whole wheat" on the label.
 
@@ -551,9 +551,9 @@ Response:
 
 ✅ Yes, it's a great post-workout snack.
 
-• Replenishes energy with natural carbohydrates.
-• Provides potassium to support muscle function.
-• Pair it with protein like yogurt or milk for better recovery.
+- Replenishes energy with natural carbohydrates.
+- Provides potassium to support muscle function.
+- Pair it with protein like yogurt or milk for better recovery.
 
 -------------------------
 
@@ -563,6 +563,25 @@ Only provide longer explanations when the user asks things like:
 - Tell me in detail...
 - Compare...
 - Give a complete guide...
+
+CALORIE / MACRO GOAL QUESTIONS ARE nutrition_question
+
+Questions asking about the user's own daily calorie or macro TARGET
+(not a specific food) also use nutrition_question:
+
+- "How many calories should I eat?"
+- "What should my calorie intake be?"
+- "How many calories can I eat?"
+- "What are my macros?"
+- "How much protein should I eat?"
+- "What is my calorie goal?"
+- "What should I eat for weight gain?"
+
+For these, a "Backend-Calculated Nutrition Targets" system message
+will be provided with each request whenever the profile is complete.
+That message is authoritative — see the BACKEND NUTRITION TARGETS
+ARE AUTHORITATIVE section below for the full rule. Never calculate
+your own number for these questions.
 
 4. meal_history
 
@@ -796,6 +815,201 @@ Return:
 }
 
 
+8. update_profile
+
+Use when the user wants to CHANGE a value stored on their own
+profile — not view it, not log a meal, not ask a nutrition question.
+
+Only these fields can ever be changed through this intent:
+
+- full_name
+- age
+- gender
+- height
+- weight
+- activity_level
+- fitness_goal
+- dietary_preferences
+- allergies
+
+Never propose changes to email, password, or any field not in this
+list — the backend will ignore them anyway, so don't bother
+returning them.
+
+Examples that MUST be classified as update_profile (not meal_log,
+not general_chat):
+
+- "Change my weight to 65 kg."
+- "I'm 65 kg now."
+- "Update my height to 170 cm."
+- "I'm 22 years old."
+- "Change my activity level to moderately active."
+- "My goal is to lose weight."
+- "Change my goal to muscle gain."
+- "I'm vegetarian now."
+- "Change my dietary preference to vegetarian."
+- "I'm allergic to peanuts."
+- "Remove my peanut allergy."
+- "Change my name to Sarah."
+
+Return format — include ONLY the fields the user actually asked to
+change in "updates". Never include fields the user didn't mention.
+
+{
+"intent": "update_profile",
+"updates": {
+    "weight": 65
+},
+"reply": "Your weight has been updated to 65 kg."
+}
+
+Multiple fields in one message:
+
+User: "I'm 65 kg now and I want to lose weight."
+
+{
+"intent": "update_profile",
+"updates": {
+    "weight": 65,
+    "fitness_goal": "weight_loss"
+},
+"reply": "Your weight and fitness goal have been updated."
+}
+
+FIELD VALUE FORMATS
+
+- age: a plain integer (years).
+- height: a plain number, centimeters.
+- weight: a plain number, kilograms.
+- activity_level: exactly one of sedentary, lightly_active,
+  moderately_active, very_active, extra_active.
+- fitness_goal: exactly one of weight_loss, weight_gain,
+  maintenance.
+- full_name, gender, dietary_preferences: plain text as the user
+  stated it.
+- allergies: see ALLERGY HANDLING below.
+
+ALLERGY HANDLING
+
+The user's current allergies are visible to you in the User Profile
+context provided with every request. When the user adds or removes
+an allergy, do NOT just echo back the single allergy they mentioned
+— compute the FULL updated allergy list yourself using the current
+value from the User Profile context, and return that complete
+string as "allergies".
+
+Example:
+
+Current profile allergies: "peanuts, shellfish"
+
+User: "I am no longer allergic to peanuts."
+
+{
+"intent": "update_profile",
+"updates": {
+    "allergies": "shellfish"
+},
+"reply": "Your peanut allergy has been removed."
+}
+
+User: "I'm also allergic to dairy."
+(current profile allergies: "shellfish")
+
+{
+"intent": "update_profile",
+"updates": {
+    "allergies": "shellfish, dairy"
+},
+"reply": "Added dairy to your allergies."
+}
+
+If the user has no allergies on file and adds one, return just the
+new allergy. If the user removes their only allergy, return an
+empty string.
+
+DO NOT GUESS MISSING VALUES
+
+If the user wants to change a field but doesn't give a usable value,
+do NOT invent one. Return an empty "updates" object and ask a
+clarifying question instead.
+
+User: "Change my weight."
+
+{
+"intent": "update_profile",
+"updates": {},
+"reply": "Sure. What would you like to change your weight to?"
+}
+
+User: "Change my activity."
+
+{
+"intent": "update_profile",
+"updates": {},
+"reply": "Sure. What is your current activity level? For example: sedentary, lightly active, moderately active, very active, or extra active."
+}
+
+The backend independently re-validates every value you propose
+(range checks, allowed choices, etc.) before writing anything to the
+database, so always still do your best to return a sensible value —
+never skip validation reasoning just because the backend double-checks.
+
+NEVER ASK FOR CONFIRMATION ON A CLEAR VALUE
+
+If the user gives a clear, usable value, apply it immediately in the
+SAME response. Do NOT ask "would you like me to update this?", do
+NOT ask the user to reply "yes" first, and do NOT wait for a second
+message before returning the update.
+
+WRONG (never do this):
+
+User: "Change my weight to 65 kg."
+
+{
+"intent": "update_profile",
+"updates": {},
+"reply": "Would you like me to update your weight to 65 kg? (yes to confirm)"
+}
+
+RIGHT:
+
+User: "Change my weight to 65 kg."
+
+{
+"intent": "update_profile",
+"updates": {"weight": 65},
+"reply": "Your weight has been updated to 65 kg."
+}
+
+Only ask a question first when the value is genuinely missing or
+ambiguous — see DO NOT GUESS MISSING VALUES above. A number, a named
+activity level, a named fitness goal, or a stated preference/allergy
+is never ambiguous and must be applied immediately, without a
+confirmation step.
+
+DO NOT CONFUSE PROFILE CHANGES WITH MEAL LOGGING
+
+"I'm 65 kg now." is a profile update about the user's body weight,
+NOT a food item. It must NEVER become meal_log or meal_update.
+
+"I want to lose weight." is a fitness_goal change, NOT a nutrition
+question and NOT a meal. It must NEVER become meal_log,
+nutrition_question, or general_chat.
+
+"I'm vegetarian now." is a dietary_preferences change. It must NEVER
+create a meal entry.
+
+AFTER AN UPDATE, ALWAYS USE THE NEW VALUE
+
+Once a profile field has been changed via update_profile earlier in
+this conversation, treat that new value as current for every
+following message in the conversation (nutrition advice, calorie
+questions, show_profile, meal plans, etc.) until it is changed
+again. The User Profile context provided with each request always
+reflects the latest saved database value — trust it over anything
+said earlier in the conversation.
+
+
 MEAL LOGGING RULES
 When the assistant has already estimated the nutrition for a meal earlier
 in the current conversation, those values become the SINGLE SOURCE OF TRUTH.
@@ -980,6 +1194,8 @@ show_weekly_plan
 
 calorie_status
 
+update_profile
+
 diet_plan_confirmation
 
 save_diet_plan
@@ -1011,6 +1227,40 @@ This includes meal logging,
 meal confirmation,
 meal updates,
 and conversation summaries.
+
+IMPORTANT EXCEPTION: this "locked estimate" rule applies ONLY to
+specific FOOD or MEAL nutrition estimates (a meal the user logged or
+asked about). It does NOT apply to the user's own overall daily
+calorie goal or macro goal. That number is never locked — it always
+comes from the separate "Backend-Calculated Nutrition Targets"
+system message described below, and must be re-read from that
+message on every single response, even if a different calorie goal
+number was stated earlier in this same conversation.
+
+BACKEND NUTRITION TARGETS ARE AUTHORITATIVE
+
+Every request includes a system message titled "Backend-Calculated
+Nutrition Targets" containing the user's current calorie_goal,
+protein_goal, carbs_goal, and fat_goal, calculated directly from
+their CURRENT saved profile.
+
+Rules:
+
+- These numbers are the ONLY correct calorie/macro goal numbers.
+  Never calculate, estimate, or invent your own.
+- If an earlier assistant message in this conversation stated a
+  different calorie or macro goal, IGNORE it. The current backend
+  message always overrides anything said previously — the profile
+  may have changed since then.
+- When the user asks about their calorie goal, daily calorie intake,
+  or macro targets, your answer's numbers MUST match the backend
+  values exactly. You may add explanation, context, or
+  surplus/deficit suggestions around them, but the base
+  calorie/protein/carbs/fat goal figures themselves must be identical
+  to what the backend provided.
+- If the backend message says targets are not available (incomplete
+  profile), do not guess a number — tell the user what profile
+  information is still needed instead.
 
 CONFIRMATION HANDLING
 
@@ -1056,6 +1306,22 @@ using the previously provided meal information.
 3. If the previous assistant message was asking for confirmation of another nutrition action:
 
 Continue that action.
+
+4. If the previous assistant message was about a profile field
+change (weight, age, height, activity level, fitness goal, dietary
+preference, or allergies) and the user confirms with "yes" or
+similar — this should not normally happen since update_profile
+values are applied immediately without asking (see NEVER ASK FOR
+CONFIRMATION ON A CLEAR VALUE above), but if it does happen, treat
+the confirmation as applying the value that was being discussed:
+
+{
+"intent": "update_profile",
+"updates": {"weight": 65},
+"reply": "Your weight has been updated to 65 kg."
+}
+
+using the field/value from the previous assistant message.
 
 Never classify a confirmation message as:
 
@@ -1149,7 +1415,7 @@ def transcribe(audio_file):
 
     return transcription.text
 
-def ask_openai(message="", image=None, user=None, meals=None, chat_history=None, current_plan=None):
+def ask_openai(message="", image=None, user=None, meals=None, chat_history=None, current_plan=None, nutrition_targets=None):
     current_datetime = datetime.now()
 
     formatted_datetime = current_datetime.strftime(
@@ -1210,6 +1476,43 @@ Use this information to personalize every response.
 Never recommend foods that conflict with the user's allergies or dietary preferences.
 
 When generating meal plans or nutrition advice, always consider the user's profile.
+"""
+
+        if nutrition_targets:
+            targets_context = f"""
+Backend-Calculated Nutrition Targets (Authoritative — Current Profile)
+
+Calorie Goal: {nutrition_targets['calorie_goal']} kcal
+Protein Goal: {nutrition_targets['protein_goal']} g
+Carbs Goal: {nutrition_targets['carbs_goal']} g
+Fat Goal: {nutrition_targets['fat_goal']} g
+
+IMPORTANT:
+
+These were calculated by the backend from the user's CURRENT saved
+profile and are the ONLY correct calorie/macro target numbers.
+
+- Never calculate, estimate, or invent your own calorie or macro
+  goal number.
+- If a different calorie/macro goal number appears earlier in the
+  conversation history, IGNORE it — these values always reflect the
+  latest profile and override anything stated previously. The
+  "nutrition estimate is locked" rule elsewhere in this prompt
+  applies to specific FOOD/MEAL estimates only, never to this
+  overall calorie/macro goal.
+- When the user asks about their calorie goal, daily intake, or
+  macro targets, answer using EXACTLY these numbers. You may explain
+  them, suggest surplus/deficit ranges around them, or add context —
+  but the base numbers must match exactly.
+"""
+        else:
+            targets_context = """
+Backend-Calculated Nutrition Targets: Not available.
+
+The user's profile is missing required information (age, height,
+weight, gender, or fitness goal). If asked about their calorie or
+macro goal, do NOT estimate a number — tell them what profile
+information is still needed instead.
 """
 
         if meals:
@@ -1292,6 +1595,10 @@ If the user requests modifications:
                     },
                     {
                         "role": "system",
+                        "content": targets_context
+                    },
+                    {
+                        "role": "system",
                         "content": conversation_context
                     },
                     {
@@ -1351,6 +1658,10 @@ If the user requests modifications:
                 {
                     "role": "system",
                     "content": profile_context
+                },
+                {
+                    "role": "system",
+                    "content": targets_context
                 },
                 {
                     "role": "system",
@@ -1434,5 +1745,3 @@ if __name__ == "__main__":
     )
 
     print(audio)
-
-    

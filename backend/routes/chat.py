@@ -15,6 +15,7 @@ from services.nutrition_service import calculate_calorie_goal, calculate_macro_g
 from sqlalchemy import func
 from datetime import date
 import json
+import re
 chat = Blueprint("chat", __name__)
 def clean_text(value):
     if isinstance(value, str):
@@ -22,12 +23,18 @@ def clean_text(value):
     return value
 today = date.today()
 
+
 DISPLAY_INTENTS = {
     "show_profile",
     "show_progress",
     "calorie_status",
     "show_meal_history",
     "show_weekly_plan",
+}
+
+NUTRITION_INTENTS = {
+    "nutrition_question",
+    "general_chat",
 }
 
 
@@ -148,6 +155,53 @@ def build_meal_history_data(user_id, limit=20):
     }
 
 
+def build_nutrition_targets(user):
+    """
+    Backend-authoritative calorie/macro targets for the CURRENT user
+    profile, computed via calculate_calorie_goal()/calculate_macro_goals()
+    only — never invented anywhere else. Returns None if the profile is
+    incomplete; callers must never substitute a guessed number in that
+    case.
+    """
+    if not user_has_complete_profile(user):
+        return None
+
+    calorie_goal = calculate_calorie_goal(user)
+    macros = calculate_macro_goals(user)
+
+    return {
+        "calorie_goal": calorie_goal,
+        "protein_goal": macros["protein_goal"],
+        "carbs_goal": macros["carbs_goal"],
+        "fat_goal": macros["fat_goal"],
+    }
+
+
+def attach_nutrition_targets(ai_reply, user):
+    """
+    Attaches backend-calculated calorie/macro targets onto ai_reply for
+    nutrition_question / general_chat — the free-form intents that
+    apply_display_intent doesn't cover. Purely additive: never touches
+    `reply` text. Ensures the caller/frontend always has the real
+    numbers even if the AI's prose drifted (e.g. from stale
+    conversation history).
+    """
+    if not isinstance(ai_reply, dict):
+        return ai_reply
+
+    if ai_reply.get("intent") not in NUTRITION_INTENTS:
+        return ai_reply
+
+    targets = build_nutrition_targets(user)
+    if targets:
+        ai_reply["calorie_goal"] = targets["calorie_goal"]
+        ai_reply["protein_goal"] = targets["protein_goal"]
+        ai_reply["carbs_goal"] = targets["carbs_goal"]
+        ai_reply["fat_goal"] = targets["fat_goal"]
+
+    return ai_reply
+
+
 def apply_display_intent(ai_reply, user, user_id, current_plan):
     """
     If ai_reply's intent is one of the new read-only display intents,
@@ -191,6 +245,331 @@ def apply_display_intent(ai_reply, user, user_id, current_plan):
         ai_reply["data"] = {"plan": current_plan}
         if not current_plan:
             ai_reply["reply"] = "You don't have a saved weekly meal plan yet."
+
+    return ai_reply
+
+
+ALLOWED_PROFILE_FIELDS = {
+    "full_name",
+    "age",
+    "gender",
+    "height",
+    "weight",
+    "activity_level",
+    "fitness_goal",
+    "dietary_preferences",
+    "allergies",
+}
+
+VALID_ACTIVITY_LEVELS = {
+    "sedentary",
+    "lightly_active",
+    "moderately_active",
+    "very_active",
+    "extra_active",
+}
+
+
+VALID_FITNESS_GOALS = {
+    "weight_loss",
+    "weight_gain",
+    "maintenance",
+}
+
+
+def validate_profile_updates(raw_updates):
+    """
+    Check the AI's proposed `updates` dict against the whitelist and
+    per-field rules. Returns (valid_updates, rejected_fields) —
+    rejected_fields maps field -> reason, for fields the AI proposed
+    but that failed validation (used to build a clarification reply).
+    Any field not in ALLOWED_PROFILE_FIELDS is silently dropped: the
+    AI has no business proposing it (e.g. email, password, id).
+    """
+    valid_updates = {}
+    rejected_fields = {}
+
+    if not isinstance(raw_updates, dict):
+        return valid_updates, rejected_fields
+
+    for field, value in raw_updates.items():
+
+        if field not in ALLOWED_PROFILE_FIELDS:
+            continue
+
+        if field in ("age", "height", "weight"):
+            try:
+                numeric_value = float(value)
+            except (TypeError, ValueError):
+                rejected_fields[field] = "not_a_number"
+                continue
+
+            if field == "age" and not (1 <= numeric_value <= 120):
+                rejected_fields[field] = "out_of_range"
+                continue
+            if field == "height" and not (30 <= numeric_value <= 300):
+                rejected_fields[field] = "out_of_range"
+                continue
+            if field == "weight" and not (2 <= numeric_value <= 500):
+                rejected_fields[field] = "out_of_range"
+                continue
+
+            valid_updates[field] = int(numeric_value) if field == "age" else numeric_value
+
+        elif field == "activity_level":
+            normalized = str(value).strip().lower().replace(" ", "_")
+            if normalized not in VALID_ACTIVITY_LEVELS:
+                rejected_fields[field] = "invalid_choice"
+                continue
+            valid_updates[field] = normalized
+
+        elif field == "fitness_goal":
+            normalized = str(value).strip().lower().replace(" ", "_")
+            if normalized not in VALID_FITNESS_GOALS:
+                rejected_fields[field] = "invalid_choice"
+                continue
+            valid_updates[field] = normalized
+
+        else:
+            # full_name, gender, dietary_preferences, allergies -> free text
+            text_value = str(value).strip()
+            if not text_value:
+                rejected_fields[field] = "empty_value"
+                continue
+            valid_updates[field] = text_value
+
+    return valid_updates, rejected_fields
+
+
+ACTIVITY_LEVEL_ALIASES = {
+    "extremely active": "extra_active",
+    "extra active": "extra_active",
+    "very active": "very_active",
+    "moderately active": "moderately_active",
+    "moderate activity": "moderately_active",
+    "lightly active": "lightly_active",
+    "light activity": "lightly_active",
+    "sedentary": "sedentary",
+}
+
+FITNESS_GOAL_ALIASES = {
+    "lose weight": "weight_loss",
+    "losing weight": "weight_loss",
+    "weight loss": "weight_loss",
+    "gain weight": "weight_gain",
+    "gaining weight": "weight_gain",
+    "weight gain": "weight_gain",
+    "build muscle": "weight_gain",
+    "muscle gain": "weight_gain",
+    "maintain my weight": "maintenance",
+    "maintain weight": "maintenance",
+    "maintenance": "maintenance",
+}
+
+FALLBACK_ELIGIBLE_INTENTS = {"update_profile", "general_chat"}
+
+_QUESTION_START = re.compile(
+    r"^(what|why|how|is|are|does|do|can|should|which|when|where)\b"
+)
+
+
+def extract_profile_updates_from_text(message, user):
+    """
+    Best-effort, conservative regex extraction of profile changes
+    directly from the user's raw message. Returns a raw (unvalidated)
+    updates dict — still passed through validate_profile_updates()
+    before anything is applied.
+    """
+    if not message:
+        return {}
+
+    text = message.strip().lower()
+
+    if not text or text.endswith("?") or _QUESTION_START.match(text):
+        return {}
+
+    updates = {}
+
+    m = (
+        re.search(r"weight.{0,15}?to\s+(\d+(?:\.\d+)?)\s*kg", text)
+        or re.search(r"\bi'?m\s+(\d+(?:\.\d+)?)\s*kg\b", text)
+        or re.search(r"\bmy\s+weight\s+is\s+(\d+(?:\.\d+)?)\s*kg?\b", text)
+    )
+    if m:
+        updates["weight"] = m.group(1)
+
+    m = (
+        re.search(r"height.{0,15}?to\s+(\d+(?:\.\d+)?)\s*cm", text)
+        or re.search(r"\bi'?m\s+(\d+(?:\.\d+)?)\s*cm\b", text)
+    )
+    if m:
+        updates["height"] = m.group(1)
+
+    m = (
+        re.search(r"age.{0,15}?to\s+(\d+)\b", text)
+        or re.search(r"\bi'?m\s+(\d+)\s*(?:years?\s*old|yo)\b", text)
+    )
+    if m:
+        updates["age"] = m.group(1)
+
+   
+    if "activ" in text:
+        for phrase, normalized in ACTIVITY_LEVEL_ALIASES.items():
+            if phrase in text:
+                updates["activity_level"] = normalized
+                break
+
+    for phrase, normalized in FITNESS_GOAL_ALIASES.items():
+        if phrase in text:
+            updates["fitness_goal"] = normalized
+            break
+
+
+    m = re.search(r"dietary preference.{0,15}?to\s+([a-z\- ]+)", text)
+    if m:
+        updates["dietary_preferences"] = m.group(1).strip()
+    elif "vegetarian" in text and ("i'm" in text or "i am" in text or "im " in text):
+        updates["dietary_preferences"] = "vegetarian"
+    elif "vegan" in text and ("i'm" in text or "i am" in text or "im " in text):
+        updates["dietary_preferences"] = "vegan"
+
+
+    m = re.search(r"(?:change|update|set)\s+my\s+name\s+to\s+([a-z ]+)", text)
+    if m:
+        updates["full_name"] = m.group(1).strip().title()
+
+    if "allerg" in text and not re.search(r"no longer allerg|remove", text):
+        m = re.search(r"(?:i'?m|i am)\s+allerg(?:y|ic)\s+to\s+([a-z, ]+)", text)
+        if not m:
+            m = re.search(r"add\s+([a-z, ]+?)\s+allerg", text)
+        if m:
+            new_allergen = m.group(1).strip()
+            existing = [a.strip() for a in (user.allergies or "").split(",") if a.strip()]
+            if new_allergen and new_allergen.lower() not in [e.lower() for e in existing]:
+                existing.append(new_allergen)
+            updates["allergies"] = ", ".join(existing)
+
+    if "allerg" in text and re.search(r"no longer allerg|remove", text):
+        m = re.search(r"(?:no longer allerg(?:y|ic) to|remove)\s+(?:my\s+)?([a-z, ]+?)(?:\s+allerg(?:y|ies))?\b", text)
+        if m:
+            removed = m.group(1).strip()
+            existing = [a.strip() for a in (user.allergies or "").split(",") if a.strip()]
+            remaining = [a for a in existing if a.lower() != removed.lower()]
+            updates["allergies"] = ", ".join(remaining)
+
+    return updates
+
+
+def apply_profile_update(ai_reply, user, message=""):
+    """
+    Applies profile changes to the authenticated user's row.
+
+    Primary path: ai_reply["intent"] == "update_profile" with a valid
+    "updates" dict — validated and applied as before.
+
+    Fallback path: if the AI didn't produce a usable update (asked for
+    confirmation, returned empty updates, or misclassified the intent
+    as general_chat), a conservative regex pass over the raw user
+    `message` is used instead, so a clear command like "change my
+    weight to 65kg" still updates the database in this same turn
+    regardless of what the AI decided to say back.
+
+    After a successful commit, recalculates the user's calorie and
+    macro targets using the existing nutrition_service functions
+    (calculate_calorie_goal / calculate_macro_goals) — these are the
+    single authoritative source, never invented here or by the AI —
+    and attaches them to ai_reply along with an updated confirmation
+    reply. If the profile is still incomplete after the update, no
+    targets are returned and the reply explains what's missing
+    instead.
+
+    Mutates and returns ai_reply. No-op if neither path applies
+    (e.g. this was a meal_log/nutrition_question/etc. message).
+    """
+    if not isinstance(ai_reply, dict):
+        return ai_reply
+
+    intent = ai_reply.get("intent")
+    is_declared_update = intent == "update_profile"
+
+    raw_updates = ai_reply.get("updates") if is_declared_update else None
+    valid_updates, rejected_fields = validate_profile_updates(raw_updates or {})
+
+    used_fallback = False
+    if not valid_updates and intent in FALLBACK_ELIGIBLE_INTENTS:
+        fallback_raw = extract_profile_updates_from_text(message, user)
+        if fallback_raw:
+            fallback_valid, _ = validate_profile_updates(fallback_raw)
+            if fallback_valid:
+                valid_updates = fallback_valid
+                used_fallback = True
+
+    if not is_declared_update and not used_fallback:
+        
+        return ai_reply
+
+    if valid_updates:
+    
+        for field, value in valid_updates.items():
+            setattr(user, field, value)
+        db.session.commit()
+
+        changed = ", ".join(f.replace("_", " ") for f in valid_updates)
+        ai_reply["intent"] = "update_profile"
+        ai_reply["updates"] = valid_updates
+
+        if user_has_complete_profile(user):
+            
+            calorie_goal = calculate_calorie_goal(user)
+            macros = calculate_macro_goals(user)
+
+            ai_reply["calorie_goal"] = calorie_goal
+            ai_reply["protein_goal"] = macros["protein_goal"]
+            ai_reply["carbs_goal"] = macros["carbs_goal"]
+            ai_reply["fat_goal"] = macros["fat_goal"]
+
+            ai_reply["reply"] = (
+                f"Your {changed} has been updated.\n\n"
+                "Your daily nutrition targets have also been recalculated:\n\n"
+                f"- Calories: {calorie_goal} kcal\n"
+                f"- Protein: {macros['protein_goal']} g\n"
+                f"- Carbs: {macros['carbs_goal']} g\n"
+                f"- Fat: {macros['fat_goal']} g"
+            )
+        else:
+         
+            missing = [
+                name for name, val in [
+                    ("age", user.age),
+                    ("height", user.height),
+                    ("weight", user.weight),
+                    ("gender", user.gender),
+                    ("fitness goal", user.fitness_goal),
+                ]
+                if val is None
+            ]
+            ai_reply["calorie_goal"] = None
+            ai_reply["protein_goal"] = None
+            ai_reply["carbs_goal"] = None
+            ai_reply["fat_goal"] = None
+            ai_reply["reply"] = (
+                f"Your {changed} has been updated. I still need your "
+                + ", ".join(missing)
+                + " to calculate your daily calorie and macro targets."
+            )
+
+        return ai_reply
+
+    if is_declared_update:
+        if rejected_fields:
+           
+            bad_field = next(iter(rejected_fields)).replace("_", " ")
+            ai_reply["reply"] = (
+                f"That doesn't look like a valid value for {bad_field}. "
+                "Please try again."
+            )
+   
+        ai_reply["updates"] = {}
 
     return ai_reply
 
@@ -276,7 +655,7 @@ def chat_with_ai():
             })
 
                 current_plan = list(days.values())
-        
+        nutrition_targets = build_nutrition_targets(user)
 
         ai_reply = ask_openai(
         message=message,
@@ -284,9 +663,18 @@ def chat_with_ai():
         user=user,
         meals=meals,
         chat_history=chat_history,
-        current_plan=current_plan
-)  
+        current_plan=current_plan,
+        nutrition_targets=nutrition_targets
+)
+
+      
+        ai_reply = apply_profile_update(ai_reply, user, message)
+
+   
+        user = User.query.get(user_id)
+
         ai_reply = apply_display_intent(ai_reply, user, user_id, current_plan)
+        ai_reply = attach_nutrition_targets(ai_reply, user)
 
         ai_message = ChatMessage(
         user_id=user_id,
@@ -595,16 +983,27 @@ def chat_audio():
 
                 current_plan = list(days.values())
 
+   
+        nutrition_targets = build_nutrition_targets(user)
+
         ai_reply = ask_openai(
             message=transcript,
             image=None,
             user=user,
             meals=meals,
             chat_history=chat_history,
-            current_plan=current_plan
+            current_plan=current_plan,
+            nutrition_targets=nutrition_targets
         )
 
+        # Profile updates first, then refresh, then everything that
+        # depends on the current profile — same ordering as /chat.
+        ai_reply = apply_profile_update(ai_reply, user, transcript)
+
+        user = User.query.get(user_id)
+
         ai_reply = apply_display_intent(ai_reply, user, user_id, current_plan)
+        ai_reply = attach_nutrition_targets(ai_reply, user)
 
         ai_message = ChatMessage(
     user_id=user_id,
