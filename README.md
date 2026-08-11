@@ -8,3 +8,14 @@ personalized nutrition assistance.
 The application combines a React frontend, Flask backend, PostgreSQL
 database, and OpenAI API to provide an interactive and personalized
 nutrition tracking experience.
+
+✨ Features
+
+ 🔐 User Authentication
+
+- User registration
+- User login
+- Secure password handling
+- JWT-based authentication
+- Forgot password functionality
+- Protected user-specific data
