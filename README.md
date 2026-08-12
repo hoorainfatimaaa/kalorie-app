@@ -19,3 +19,21 @@ nutrition tracking experience.
 - JWT-based authentication
 - Forgot password functionality
 - Protected user-specific data
+
+👤 Personalized User Profile
+
+Users can create a personalized nutrition profile containing:
+
+- Full name
+- Age
+- Gender
+- Height
+- Weight
+- Activity level
+- Fitness goal
+- Dietary preferences
+- Allergies
+
+The profile information is used to provide more personalized calorie,
+nutrition, and diet recommendations.
+
