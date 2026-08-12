@@ -37,3 +37,17 @@ Users can create a personalized nutrition profile containing:
 The profile information is used to provide more personalized calorie,
 nutrition, and diet recommendations.
 
+📸 AI-Powered Meal Analysis
+
+Users can provide information about their meals to the AI assistant.
+
+The AI can analyze food and provide estimated:
+
+- Calories
+- Protein
+- Carbohydrates
+- Fat
+- Portion size
+
+When an exact quantity is not available, the system can estimate the
+portion size and provide estimated nutritional values.
