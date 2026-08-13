@@ -51,3 +51,34 @@ The AI can analyze food and provide estimated:
 
 When an exact quantity is not available, the system can estimate the
 portion size and provide estimated nutritional values.
+
+📝 Meal Logging
+
+Users can log meals and store their nutritional information.
+
+Each meal can contain information such as:
+
+- Meal name
+- Calories
+- Protein
+- Carbohydrates
+- Fat
+- Portion
+- Date and time
+
+Meals are associated with the authenticated user and stored in the
+database for future reference.
+📊 Daily Nutrition Progress
+
+The application tracks the user's daily nutritional intake.
+
+Users can monitor:
+
+- Daily calorie intake
+- Protein consumption
+- Carbohydrate consumption
+- Fat consumption
+
+Nutrition progress is displayed using visual charts to make the user's
+daily intake easier to understand.
+
