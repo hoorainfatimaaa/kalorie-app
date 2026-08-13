@@ -82,3 +82,11 @@ Users can monitor:
 Nutrition progress is displayed using visual charts to make the user's
 daily intake easier to understand.
 
+🍴 Meal History
+
+Users can view their previously logged meals.
+
+The stored meal history allows users to review their food intake over time
+and provides the AI assistant with access to relevant previous meal
+information.
+
