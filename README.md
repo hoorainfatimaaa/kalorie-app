@@ -120,4 +120,7 @@ Create a diet plan for me.
 
 What is a good meal for weight loss?
 
+🥗 Personalized Diet Plans
+The AI assistant can generate meal and diet recommendations based on
+information available in the user's profile and their fitness goals.
 
