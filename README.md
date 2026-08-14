@@ -123,4 +123,10 @@ What is a good meal for weight loss?
 🥗 Personalized Diet Plans
 The AI assistant can generate meal and diet recommendations based on
 information available in the user's profile and their fitness goals.
+🎙️ Voice Interaction
+The AI assistant supports voice-based interaction.
+Users can record their voice, which is transcribed and processed by the
+AI assistant.
+AI responses can also be converted into speech for a more interactive
+experience.
 
