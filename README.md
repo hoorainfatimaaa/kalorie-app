@@ -89,4 +89,35 @@ Users can view their previously logged meals.
 The stored meal history allows users to review their food intake over time
 and provides the AI assistant with access to relevant previous meal
 information.
+🤖 AI Nutrition Assistant
+
+Kalorie AI includes a conversational AI nutrition assistant.
+
+Users can interact with the assistant using natural language to:
+
+- Ask nutrition questions
+- Ask about calories
+- Log meals
+- Ask about previously logged meals
+- Get nutrition recommendations
+- Ask about their daily intake
+- Generate diet recommendations
+- Discuss fitness and nutrition goals
+
+Example questions:
+
+How many calories are in this meal?
+
+What did I eat today?
+
+Show me my meal history.
+
+How much protein did I consume today?
+
+What should I eat for dinner?
+
+Create a diet plan for me.
+
+What is a good meal for weight loss?
+
 
