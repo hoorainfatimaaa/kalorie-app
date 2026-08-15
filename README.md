@@ -151,3 +151,46 @@ Deployment
 •	Cloud-based backend deployment 
 •	Neon PostgreSQL for hosted database storage 
 
+🏗️ Project Architecture
+Kalorie AI follows a full-stack client-server architecture.
+kalorie-app/
+│
+├── backend/
+│   │
+│   ├── database/
+│   │   └── db.py
+│   │
+│   ├── models/
+│   │   ├── user.py
+│   │   ├── meal.py
+│   │   ├── chat_message.py
+│   │   └── diet_plan.py
+│   │
+│   ├── routes/
+│   │   ├── auth.py
+│   │   ├── chat.py
+│   │   ├── meals.py
+│   │   ├── progress.py
+│   │   └── ...
+│   │
+│   ├── services/
+│   │   └── openai_service.py
+│   │
+│   ├── app.py
+│   ├── config.py
+│   ├── requirements.txt
+│   └── .gitignore
+│
+├── frontend/
+│   │
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   └── ...
+│   │
+│   ├── package.json
+│   ├── vite.config.js
+│   └── ...
+│
+└── README.md
