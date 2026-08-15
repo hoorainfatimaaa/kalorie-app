@@ -129,4 +129,25 @@ Users can record their voice, which is transcribed and processed by the
 AI assistant.
 AI responses can also be converted into speech for a more interactive
 experience.
+🛠️ Technology Stack
+Frontend
+•	React.js 
+•	Vite 
+•	JavaScript 
+•	CSS 
+Backend
+•	Python 
+•	Flask 
+•	Flask-CORS 
+•	Flask-JWT-Extended 
+•	SQLAlchemy 
+Database
+•	PostgreSQL 
+•	Neon PostgreSQL 
+Artificial Intelligence
+•	OpenAI API 
+Deployment
+•	Vercel for frontend deployment 
+•	Cloud-based backend deployment 
+•	Neon PostgreSQL for hosted database storage 
 
