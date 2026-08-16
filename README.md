@@ -194,3 +194,34 @@ kalorie-app/
 │   └── ...
 │
 └── README.md
+🔄 How Kalorie AI Works
+The application follows a client-server architecture where the React
+frontend communicates with the Flask backend through API requests.
+The backend handles authentication, business logic, AI communication,
+database operations, and user-specific information.
+                 ┌─────────────────┐
+                 │      User       │
+                 └────────┬────────┘
+                          │
+                          ▼
+                 ┌─────────────────┐
+                 │ React Frontend  │
+                 │     + Vite      │
+                 └────────┬────────┘
+                          │
+                     HTTP / API
+                          │
+                          ▼
+                 ┌─────────────────┐
+                 │ Flask Backend   │
+                 │    REST API     │
+                 └───────┬─────────┘
+                         │
+              ┌──────────┴──────────┐
+              │                     │
+              ▼                     ▼
+      ┌────────────────┐    ┌────────────────┐
+      │  PostgreSQL    │    │   OpenAI API   │
+      │    Database    │    │       AI       │
+      └────────────────┘    └────────────────┘
+
