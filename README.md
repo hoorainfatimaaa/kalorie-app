@@ -224,4 +224,27 @@ database operations, and user-specific information.
       │  PostgreSQL    │    │   OpenAI API   │
       │    Database    │    │       AI       │
       └────────────────┘    └────────────────┘
+🍴 Meal Logging Workflow
+A typical meal logging process works as follows:
+User provides meal information
+             ↓
+      React Frontend
+             ↓
+       Flask Backend
+             ↓
+        OpenAI API
+             ↓
+     Meal is analyzed
+             ↓
+Calories and macronutrients estimated
+             ↓
+      Meal stored in DB
+             ↓
+      Progress updated
+             ↓
+      Result shown to user
+For image-based meal analysis, the AI can identify food items and estimate
+their nutritional values.
+If the exact portion is unknown, the system estimates the portion and
+marks the nutritional information accordingly.
 
