@@ -247,6 +247,7 @@ For image-based meal analysis, the AI can identify food items and estimate
 their nutritional values.
 If the exact portion is unknown, the system estimates the portion and
 marks the nutritional information accordingly.
+
 🤖 AI Architecture
 The application uses the OpenAI API to provide AI-powered nutrition
 functionality.
@@ -264,4 +265,19 @@ Examples include:
 •	General nutrition conversation 
 This allows the AI assistant to perform different application actions
 rather than only returning conversational responses.
+
+🧠 AI Assistant Memory
+The application uses different sources of information to provide
+context-aware responses.
+Short-Term Conversation Context
+Recent chat messages are provided to the AI assistant so that it can
+understand the current conversation.
+Long-Term Meal History
+Previously logged meals are stored in PostgreSQL and can be retrieved when
+the user asks questions about their meal history.
+For example:
+When did I have halva?
+The assistant can use the user's stored meal records to answer questions
+about previous meals.
+
 
