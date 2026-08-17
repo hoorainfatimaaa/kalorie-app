@@ -247,4 +247,21 @@ For image-based meal analysis, the AI can identify food items and estimate
 their nutritional values.
 If the exact portion is unknown, the system estimates the portion and
 marks the nutritional information accordingly.
+🤖 AI Architecture
+The application uses the OpenAI API to provide AI-powered nutrition
+functionality.
+The backend contains an AI service responsible for communicating with
+OpenAI and processing nutrition-related requests.
+The AI assistant uses structured intents to determine what type of
+nutrition-related operation the user is requesting.
+Examples include:
+•	Meal logging 
+•	Meal updates 
+•	Meal deletion 
+•	Nutrition questions 
+•	Meal history 
+•	Diet plan generation 
+•	General nutrition conversation 
+This allows the AI assistant to perform different application actions
+rather than only returning conversational responses.
 
