@@ -280,4 +280,24 @@ When did I have halva?
 The assistant can use the user's stored meal records to answer questions
 about previous meals.
 
+🧮 Calorie & Nutrition Tracking
+The application uses user profile information to support personalized
+nutrition recommendations.
+The user's:
+•	Age 
+•	Gender 
+•	Height 
+•	Weight 
+•	Activity level 
+•	Fitness goal 
+can be used when calculating calorie requirements and providing nutrition
+recommendations.
+The application supports calorie and macronutrient tracking for:
+•	Calories 
+•	Protein 
+•	Carbohydrates 
+•	Fat 
+Daily progress is displayed through visual progress charts.
+
+
 
