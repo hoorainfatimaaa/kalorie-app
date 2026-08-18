@@ -298,6 +298,17 @@ The application supports calorie and macronutrient tracking for:
 •	Carbohydrates 
 •	Fat 
 Daily progress is displayed through visual progress charts.
+📈 Nutrition Progress
+The progress section provides an overview of the user's daily nutritional
+intake.
+Users can compare their current intake with their nutritional targets.
+The interface provides visual representations of:
+•	Calories 
+•	Protein 
+•	Carbohydrates 
+•	Fat 
+This allows users to quickly understand how much of their daily nutrition
+target they have consumed.
 
 
 
