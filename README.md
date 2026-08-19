@@ -338,5 +338,18 @@ Diet Plans
 Stores generated or saved diet plan information.
 The database allows information to persist between sessions.
 
+🔐 Authentication & Security
+The backend uses JWT-based authentication to protect user-specific
+resources.
+After authentication, requests to protected endpoints require a valid
+JWT token.
+This allows the backend to associate:
+•	Meals 
+•	Chat history 
+•	Profile information 
+•	Progress information 
+with the correct authenticated user.
+Sensitive credentials are stored using environment variables rather than
+being included directly in the source code.
 
 
