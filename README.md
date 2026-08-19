@@ -309,6 +309,21 @@ The interface provides visual representations of:
 •	Fat 
 This allows users to quickly understand how much of their daily nutrition
 target they have consumed.
+👤 User Profile
+The profile system stores information used for personalized nutrition
+assistance.
+Example profile information:
+Full Name: Example User
+Age: 23
+Gender: Male
+Height: 175 cm
+Weight: 60 kg
+Activity Level: Sedentary
+Fitness Goal: Weight Loss
+Dietary Preference: Halal
+Allergies: None
+The AI assistant can use this information when generating relevant
+nutrition recommendations.
 
 
 
