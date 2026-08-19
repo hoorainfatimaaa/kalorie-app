@@ -324,6 +324,19 @@ Dietary Preference: Halal
 Allergies: None
 The AI assistant can use this information when generating relevant
 nutrition recommendations.
+🗄️ Database
+PostgreSQL is used as the application's primary database.
+The project uses SQLAlchemy as the Object Relational Mapper (ORM).
+The database contains information related to:
+Users
+Stores user account and profile information.
+Meals
+Stores logged meals and their nutritional information.
+Chat Messages
+Stores conversations between users and the AI assistant.
+Diet Plans
+Stores generated or saved diet plan information.
+The database allows information to persist between sessions.
 
 
 
