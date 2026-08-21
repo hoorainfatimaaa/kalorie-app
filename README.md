@@ -352,4 +352,23 @@ with the correct authenticated user.
 Sensitive credentials are stored using environment variables rather than
 being included directly in the source code.
 
+🔌 Backend API
+The Flask backend exposes REST API endpoints for different parts of the
+application.
+Major API areas include:
+Authentication
+       ↓
+User Profile
+       ↓
+Meal Management
+       ↓
+AI Chat
+       ↓
+Progress Tracking
+       ↓
+Diet Plans
+The backend is responsible for validating requests, authenticating users,
+processing AI requests, interacting with PostgreSQL, and returning
+structured responses to the frontend.
+
 
