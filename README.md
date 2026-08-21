@@ -371,4 +371,11 @@ The backend is responsible for validating requests, authenticating users,
 processing AI requests, interacting with PostgreSQL, and returning
 structured responses to the frontend.
 
+⚙️ Installation & Setup
+1. Clone the Repository
+git clone https://github.com/hoorainfatimaaa/kalorie-app.git
+Navigate into the project:
+cd ai-calorie-app
+
+
 
