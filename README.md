@@ -376,6 +376,13 @@ structured responses to the frontend.
 git clone https://github.com/hoorainfatimaaa/kalorie-app.git
 Navigate into the project:
 cd ai-calorie-app
+🐍 Backend Setup
+Navigate to the backend directory:
+cd backend
+Create a Python virtual environment:
+python -m venv venv
+Activate the virtual environment.
+
 
 
 
