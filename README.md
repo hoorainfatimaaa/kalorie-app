@@ -395,4 +395,8 @@ OPENAI_API_KEY=your_openai_api_key
 SECRET_KEY=your_secret_key
 JWT_SECRET_KEY=your_jwt_secret_key
 
+▶️ Running the Backend
+From the backend directory:
+python app.py
+The Flask development server will start locally.
 
