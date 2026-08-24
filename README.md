@@ -382,7 +382,17 @@ cd backend
 Create a Python virtual environment:
 python -m venv venv
 Activate the virtual environment.
+Windows
+venv\Scripts\activate
+Install the required dependencies:
+pip install -r requirements.txt
 
-
+🔑 Environment Variables
+Create a .env file inside the backend directory.
+Example:
+DATABASE_URL=your_postgresql_database_url
+OPENAI_API_KEY=your_openai_api_key
+SECRET_KEY=your_secret_key
+JWT_SECRET_KEY=your_jwt_secret_key
 
 
