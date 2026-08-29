@@ -6,10 +6,6 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-print("DATABASE_URL EXISTS:", bool(DATABASE_URL))
-print("DATABASE_URL START:", DATABASE_URL[:30] if DATABASE_URL else "MISSING")
-print("DATABASE_URL HAS_NONE:", "None" in DATABASE_URL if DATABASE_URL else False)
-
 
 class Config:
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
@@ -18,6 +14,13 @@ class Config:
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,
         "pool_recycle": 300,
+        "connect_args": {
+            "connect_timeout": 30,
+            "keepalives": 1,
+            "keepalives_idle": 30,
+            "keepalives_interval": 10,
+            "keepalives_count": 5,
+        },
     }
 
     SECRET_KEY = os.getenv("SECRET_KEY")

@@ -1,1444 +1,1742 @@
-:root {
-    --primary: #1F3A5F;
-    --sage: #adc5ab;
-    --cream: #FCFAF5;
-    --green: #6B8E7A;
-    --green-dark: #4F7C82;
-    --green-light: #E8F2E8;
-    --border: #E5E7EB;
-    --text: #2B2B2B;
-    --muted: #6B7280;
-    --navbar-height: 72px; 
-}
-
-body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-
-    background: linear-gradient(
-        135deg,
-        #7f9d7c 0%,
-        #adc5ab 100%
-    );
-}
-
 .assistant-container {
-    width: 95%;
-    max-width: 1500px;
-    margin: 25px auto;
-    height: calc(100vh - 130px);
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 18px clamp(14px, 1.8vw, 26px) 22px;
+    height: calc(100vh - var(--nav-h));
+    height: calc(100dvh - var(--nav-h));
     overflow: hidden;
-    box-sizing: border-box;
 }
 
 .assistant-layout {
-    display: grid;
-    grid-template-columns: minmax(0,1fr) 360px;
-    gap: 26px;
+    display: flex;
     height: 100%;
 }
 
-.assistant-sidebar {
-    display:flex;
-    flex-direction:column;
-    gap:22px;
-    height:100%;
-    min-height:0;
-}
-
-.progress-card-wrapper,
-.meal-history-wrapper {
-
-    flex:1;
-    min-height:0;
-    overflow:hidden;
-
-    background:
-    linear-gradient(
-        145deg,
-        #FCFAF5,
-        #F1F6EE
-    );
-
-    border-radius:26px;
-
-    box-shadow:
-    0 15px 40px rgba(31,58,95,0.18);
-
-    padding:5px;
-
-}
-
-
 .chat-card {
+    flex: 1;
+    width: 100%;
+    height: 100%;
 
-    background:
-    rgba(252,250,245,0.96);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 
-    border-radius:28px;
-
-    box-shadow:
-    0 20px 50px rgba(31,58,95,0.18);
-
-    overflow:hidden;
-
-    display:flex;
-
-    flex-direction:column;
-
-    height:100%;
-
+    background: var(--cream);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-lg);
 }
-
 
 .chat-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
 
-    display:flex;
+    padding: 15px clamp(18px, 3vw, 40px);
 
-    align-items:center;
-
-    gap:15px;
-
-    padding:28px 35px;
-
-    background:#FCFAF5;
-
-    border-bottom:1px solid var(--border);
-
+    background: var(--cream);
+    border-bottom: 1px solid var(--border-warm);
 }
-
-
-.chat-card-icon {
-
-    width:48px;
-
-    height:48px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    border-radius:16px;
-
-    background:
-    linear-gradient(
-        135deg,
-        #6B8E7A,
-        #4F7C82
-    );
-
-    color:white;
-
-    font-size:20px;
-
-    box-shadow:
-    0 8px 18px rgba(79,124,130,0.3);
-
-}
-
 
 .chat-card-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 
-    margin:0;
-
-    color:var(--primary);
-
-    font-size:20px;
-
-    font-weight:600;
-
-    letter-spacing:-0.5px;
-
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--primary);
 }
 
+.chat-card-header h2::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #6FA97C;
+    box-shadow: 0 0 0 3px rgba(111, 169, 124, 0.18);
+}
 
 .chat-container {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 
-    display:flex;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 
-    flex-direction:column;
-
-    gap:18px;
-
-    flex:1;
-
-    min-height:0;
-
-    overflow-y:auto;
-
-    padding:32px;
-
+    padding: 24px clamp(18px, 3vw, 40px);
+    background: #FFFDF9;
 }
-
 
 .chat-container::-webkit-scrollbar {
-
-    width:7px;
-
+    width: 8px;
 }
 
+.chat-container::-webkit-scrollbar-track {
+    background: transparent;
+}
 
 .chat-container::-webkit-scrollbar-thumb {
-
-    background:#D4E2CF;
-
-    border-radius:20px;
-
+    background: #D7E2D3;
+    border-radius: var(--r-pill);
+    border: 2px solid #FFFDF9;
 }
-
 
 .chat-message {
-
-    max-width:70%;
-
-    padding:15px 20px;
-
-    border-radius:20px;
-
-    line-height:1.6;
-
-    font-size:15px;
-
+    max-width: min(80%, 760px);
+    padding: 11px 16px;
+    border-radius: var(--r-lg);
+    font-size: 15px;
+    line-height: 1.6;
+    animation: bubbleIn 0.2s ease;
 }
-
 
 .chat-message.ai {
-
-    align-self:flex-start;
-
-    background:white;
-
-    color:var(--text);
-
-    border-left:4px solid var(--green);
-
-    border-radius:
-
-    20px 20px 20px 5px;
-
-    box-shadow:
-
-    0 5px 18px rgba(31,58,95,0.08);
-
+    align-self: flex-start;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg) var(--r-lg) var(--r-lg) 6px;
+    box-shadow: var(--sh-sm);
 }
-
 
 .chat-message.user {
-
-    align-self:flex-end;
-
-    background:
-    linear-gradient(
-        135deg,
-        #6B8E7A,
-        #4F7C82
-    );
-
-    color:white;
-
-    border-radius:
-
-    20px 20px 5px 20px;
-
-    box-shadow:
-
-    0 8px 20px rgba(107,142,122,0.3);
-
+    align-self: flex-end;
+    background: var(--grad-brand);
+    color: #fff;
+    border-radius: var(--r-lg) var(--r-lg) 6px var(--r-lg);
+    box-shadow: 0 6px 16px rgba(79, 124, 130, 0.22);
 }
-
 
 .chat-message p {
-
-    margin:0;
-
-    white-space:pre-wrap;
-
-}
-.chat-image {
-
-    width:220px;
-
-    max-width:100%;
-
-    border-radius:16px;
-
-    margin-top:10px;
-
+    margin: 0;
+    white-space: pre-wrap;
 }
 
-
-.selected-image {
-
-    margin-bottom:14px;
-
-}
-
-
-.image-chip {
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    background:white;
-
-    border:1px solid #D7E6D4;
-
-    border-radius:14px;
-
-    padding:10px 15px;
-
-    max-width:350px;
-
-}
-
-
-.image-name {
-
-    flex:1;
-
-    overflow:hidden;
-
-    white-space:nowrap;
-
-    text-overflow:ellipsis;
-
-    color:var(--text);
-
-    font-size:14px;
-
-}
-.remove-image-btn {
-
-    width:28px;
-
-    height:28px;
-
-    border:none;
-
-    border-radius:50%;
-
-    background:#E5E7EB;
-
-    color:#555;
-
-    cursor:pointer;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-size:12px;
-
-    transition:0.2s;
-
-}
-.remove-image-btn:hover {
-
-    background:#E4463F;
-
-    color:white;
-
-}
-.image-preview img {
-
-    width:180px;
-
-    border-radius:16px;
-
-    border:1px solid var(--border);
-
-    box-shadow:
-    0 5px 15px rgba(31,58,95,0.12);
-
-}
-.input-section {
-
-    display:flex;
-
-    align-items:center;
-
-    gap:14px;
-
-    padding:22px 30px;
-
-    background:#FCFAF5;
-
-    border-top:1px solid var(--border);
-
-}
-
-
-.input-section input[type="text"] {
-
-    flex:1;
-
-    height:56px;
-
-    padding:0 20px;
-
-    border-radius:18px;
-
-    background:white;
-
-    border:2px solid transparent;
-
-    box-shadow:
-    inset 0 0 0 1px #E5E7EB;
-
-    font-size:15px;
-
-    color:var(--text);
-
-    outline:none;
-
-    transition:0.25s;
-
-}
-
-
-.input-section input[type="text"]:focus {
-
-    border-color:var(--green);
-
-    box-shadow:
-    0 0 0 4px rgba(107,142,122,0.15);
-
-}
-
-
-.input-section input[type="text"]::placeholder {
-
-    color:#9AA0A6;
-
-}
-
-
-
-.thinking-text {
-
-    align-self:flex-start;
-
-    padding:14px 20px;
-
-    background:white;
-
-    border-left:4px solid var(--green);
-
-    border-radius:
-
-    20px 20px 20px 5px;
-
-    color:var(--muted);
-
-    font-size:14px;
-
-    font-style:italic;
-
-    box-shadow:
-
-    0 5px 15px rgba(31,58,95,0.08);
-
-}
-.upload-btn,
-.mic-btn,
-.send-btn {
+.chat-message.ai:has(.ai-card) {
+    max-width: min(94%, 1060px);
+    padding: 0;
     background: transparent;
     border: none;
     box-shadow: none;
+}
+
+.chat-message.pending-image {
+    align-self: flex-end;
+    max-width: min(90%, 380px);
     padding: 0;
-    width: auto;
-    height: auto;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.chat-image {
+    width: 220px;
+    max-width: 100%;
+    margin-top: 10px;
+    border-radius: var(--r-md);
+}
+
+.image-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 9px 12px;
+
+    background: var(--surface);
+    border: 1px solid var(--border-green);
+    border-radius: var(--r-md);
+    box-shadow: var(--sh-sm);
+}
+
+.image-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    font-size: 13px;
+    color: var(--text);
+}
+
+.remove-image-btn {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    cursor: pointer;
-    transition: transform 0.2s ease;
-    
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface-3);
+    border-radius: 50%;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
-.upload-btn:hover,
-.mic-btn:hover,
-.send-btn:hover {
-    transform: scale(1.12);
-    background: transparent;
-    box-shadow: none;
+.remove-image-btn:hover {
+    background: var(--danger);
+    color: #fff;
 }
 
-.upload-btn:active,
-.mic-btn:active,
-.send-btn:active {
-    transform: scale(0.95);
-}
-.upload-btn {
-    color: #4F7C82;
-    font-size: 20px;
-}
+.thinking-text {
+    align-self: flex-start;
 
-.mic-btn {
-    color: #4F7C82;
-    font-size: 20px;
-}
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
-.send-btn {
-    color: #4F7C82;
-    font-size: 20px;
-}
-.upload-btn,
-.mic-btn,
-.send-btn {
-    color: #4F7C82;
-    font-size: 20px;
-    background: transparent;
-    border: none;
-    box-shadow: none;
+    padding: 11px 18px;
+
+    font-size: 14px;
+    color: var(--muted);
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg) var(--r-lg) var(--r-lg) 6px;
+    box-shadow: var(--sh-sm);
 }
 
-
-.recording-preview,
-.audio-preview {
-
-    display:flex;
-    align-items:center;
-
-    gap:14px;
-
-    background:
-    rgba(173,197,171,0.25);
-
-    border:1px solid rgba(91,140,133,0.25);
-
-    padding:10px 16px;
-
-    border-radius:18px;
-
-    margin-bottom:10px;
-
-    animation:fadeIn .2s ease;
-
+.thinking-text::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 1.1s ease-in-out infinite;
 }
 
-
-
-.recording-dot {
-
-    width:10px;
-    height:10px;
-
-    background:#d9534f;
-
-    border-radius:50%;
-
-    animation:pulse 1s infinite;
-
+.recording-indicator {
+    align-self: flex-end;
+    padding: 8px 14px;
+    font-size: 15px;
+    background: var(--green-light);
+    border-radius: var(--r-pill);
 }
 
-
-
-.recording-text {
-
-    color:#315c56;
-
-    font-weight:600;
-
-}
-
-
-
-.recording-time {
-
-    color:#667;
-
-}
-
-
-.audio-preview {
-
-    background:#ffffff;
-
-}
-
-
-
-.audio-play-btn,
-.audio-remove-btn {
-
-    border:none;
-
-    background:none;
-
-    cursor:pointer;
-
-    font-size:16px;
-
-}
-
-
-
-.audio-remove-btn {
-
-    color:#888;
-
-}
-
-
-
-.audio-progress {
-
-    display:flex;
-
-    align-items:center;
-
-    gap:3px;
-
-}
-
-
-
-.audio-progress span {
-
-    width:3px;
-
-    height:16px;
-
-    background:#6c978e;
-
-    border-radius:5px;
-
-}
-
-
-
-.audio-progress span:nth-child(2),
-.audio-progress span:nth-child(4){
-
-    height:25px;
-
-}
-
-
-
-.audio-duration {
-
-    font-size:13px;
-
-    color:#666;
-
-}
-
-.chat-audio-message {
-
-    display:flex;
-    align-items:center;
-    gap:10px;
-
-    background:#adc5ab;
-
-    padding:10px 14px;
-
-    border-radius:18px;
-
-    width:fit-content;
-
-    min-width:140px;
-
-    max-width:220px;
-}
-.chat-audio-play {
-
-    border:none;
-
-    background:white;
-
-    width:30px;
-    height:30px;
-
-    border-radius:50%;
-
-    cursor:pointer;
-
-}
-
-
-
-.chat-audio-wave {
-
-    display:flex;
-
-    align-items:center;
-
-    gap:3px;
-
-}
-
-
-
-.chat-audio-wave span {
-
-    width:3px;
-
-    height:15px;
-
-    background:white;
-
-    border-radius:5px;
-
-}
-
-
-
-.chat-audio-wave span:nth-child(2),
-.chat-audio-wave span:nth-child(4){
-
-    height:25px;
-
-}
-
-
-
-.chat-audio-duration {
-
-    color:white;
-
-    font-size:13px;
-
-}
-
-
-
-@keyframes pulse {
-
-    0%{
-        transform:scale(1);
-    }
-
-    50%{
-        transform:scale(1.4);
-    }
-
-    100%{
-        transform:scale(1);
-    }
-
-}
-
-
-@keyframes fadeIn {
-
-    from{
-        opacity:0;
-        transform:translateY(5px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
 .ai-message-content {
     display: flex;
     flex-direction: column;
+    gap: 6px;
 }
 
 .ai-message-content p {
     margin: 0;
 }
 
+.ai-plain-reply {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text);
+}
+
+
+.ai-streaming-reply {
+    white-space: pre-wrap;
+}
+
+.meal-field-pending {
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 0.82em;
+    animation: meal-field-pulse 1.3s ease-in-out infinite;
+}
+
+@keyframes meal-field-pulse {
+    0%, 100% { opacity: 0.45; }
+    50%      { opacity: 0.85; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .meal-field-pending {
+        animation: none;
+        opacity: 0.65;
+    }
+}
+
 .speak-btn {
+    align-self: flex-end;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    height: 28px;
+    padding: 0;
+
+    font-size: 13px;
+    opacity: 0.55;
+
+    border-radius: 50%;
+    transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.speak-btn:hover {
+    opacity: 1;
+    background: var(--surface-3);
+}
+
+.speak-btn.speaking {
+    opacity: 1;
+    background: var(--surface-3);
+    animation: speak-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes speak-pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .speak-btn.speaking {
+        animation: none;
+    }
+}
+
+.input-section {
+    flex-shrink: 0;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+
+    padding: 14px clamp(16px, 3vw, 40px);
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));
+
+    background: var(--cream);
+    border-top: 1px solid var(--border-warm);
+}
+
+.input-section input[type="text"] {
+    flex: 1 1 180px;
+    min-width: 0;
+
+    height: 46px;
+    padding: 0 18px;
+
+    font-size: 15px;
+    color: var(--text);
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    box-shadow: var(--sh-xs);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-section input[type="text"]:focus {
+    border-color: var(--green);
+    box-shadow: var(--ring-green);
+}
+
+.upload-btn,
+.mic-btn,
+.send-btn {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+    border-radius: 50%;
+    transition: background 0.2s ease, color 0.2s ease,
+        transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.upload-btn,
+.mic-btn {
+    font-size: 19px;
+    color: var(--teal);
+    background: transparent;
+}
+
+.upload-btn:hover,
+.mic-btn:hover {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+.upload-btn:active,
+.mic-btn:active {
+    transform: scale(0.94);
+}
+
+.send-btn {
+    font-size: 17px;
+    color: #fff;
+    background: var(--grad-brand);
+    box-shadow: 0 5px 12px rgba(79, 124, 130, 0.3);
+}
+
+.send-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(79, 124, 130, 0.36);
+}
+
+.send-btn:active {
+    transform: scale(0.95);
+}
+
+.recording-preview,
+.audio-preview {
+    flex: 1 0 100%;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 9px 14px;
+
+    background: var(--green-light);
+    border: 1px solid var(--border-green);
+    border-radius: var(--r-md);
+    animation: fadeIn 0.2s ease;
+}
+
+.audio-preview {
+    background: var(--surface);
+    border-color: var(--border);
+}
+
+.recording-dot {
+    width: 9px;
+    height: 9px;
+    flex-shrink: 0;
+    background: #D9534F;
+    border-radius: 50%;
+    animation: pulse 1s infinite;
+}
+
+.recording-text {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--green-deep);
+}
+
+.recording-time,
+.audio-duration {
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+}
+
+.audio-play-btn,
+.audio-remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    font-size: 12px;
+    border-radius: 50%;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.audio-play-btn {
+    color: var(--green-dark);
+    background: var(--green-light);
+}
+
+.audio-play-btn:hover {
+    background: #D8E9D8;
+}
+
+.audio-remove-btn {
+    margin-left: auto;
+    color: var(--muted);
+    background: var(--surface-3);
+}
+
+.audio-remove-btn:hover {
+    background: var(--danger);
+    color: #fff;
+}
+
+.audio-progress,
+.chat-audio-wave {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.audio-progress span {
+    width: 3px;
+    height: 14px;
+    background: #9CBBA9;
+    border-radius: var(--r-pill);
+}
+
+.audio-progress span:nth-child(2),
+.audio-progress span:nth-child(4) {
+    height: 22px;
+}
+
+.chat-audio-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    width: fit-content;
+    min-width: 150px;
+    max-width: 220px;
+
+    padding: 9px 12px;
+
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: var(--r-md);
+}
+
+.chat-audio-play {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 11px;
+    color: var(--green-dark);
+    background: #fff;
+    border-radius: 50%;
+}
+
+.chat-audio-wave span {
+    width: 3px;
+    height: 13px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: var(--r-pill);
+}
+
+.chat-audio-wave span:nth-child(2),
+.chat-audio-wave span:nth-child(4) {
+    height: 21px;
+}
+
+.chat-audio-duration {
+    margin-left: auto;
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.35);
+        opacity: 0.65;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bubbleIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ai-card {
     width: 100%;
 
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    gap: 10px;
 
-    border: none;
-    background: transparent;
+    padding: 14px 16px;
 
-    padding: 4px 0 0 0;
+    background: var(--surface);
+    border: 1px solid var(--border-green);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-md);
+}
+
+.ai-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 15.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--primary);
+}
+
+.ai-card-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 15px;
+
+    background: var(--green-light);
+    border: 1px solid var(--border-green);
+    border-radius: var(--r-sm);
+}
+
+.ai-card-icon.delete {
+    background: var(--danger-bg);
+    border-color: var(--danger-border);
+}
+
+.ai-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.meal-log-card .ai-stat-grid,
+.nutrition-card .ai-stat-grid,
+.profile-update-card .ai-stat-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.profile-snapshot-card .ai-stat-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ai-stat-box {
+    min-width: 130px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    padding: 8px 11px;
+
+    background: var(--surface-2);
+    border: 1px solid #EDF2EB;
+    border-radius: var(--r-sm);
+}
+
+.ai-stat-box.wide {
+    grid-column: 1 / -1;
+}
+
+.ai-stat-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.ai-stat-value {
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.45;
+    overflow-wrap: break-word;
+    color: var(--primary);
+}
+
+.profile-snapshot-card .ai-stat-value,
+.profile-update-card .ai-stat-value {
+    text-transform: capitalize;
+}
+
+.ai-stat-box.wide .ai-stat-value {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.ai-empty-state {
+    padding: 18px 10px;
+    font-size: 14px;
+    text-align: center;
+    color: var(--muted);
+}
+
+.meal-name {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--primary);
+}
+
+.meal-success {
+    padding: 6px 10px;
+
+    font-size: 12.5px;
+    font-weight: 600;
+    text-align: center;
+
+    background: var(--ok-bg);
+    color: var(--ok-fg);
+    border-radius: var(--r-xs);
+}
+
+.meal-estimated-note,
+.nutrition-tip {
+    padding: 8px 11px;
 
     font-size: 13px;
+    line-height: 1.55;
 
+    background: var(--warn-bg);
+    color: var(--warn-fg);
+    border: 1px solid var(--warn-border);
+    border-left-width: 3px;
+    border-radius: var(--r-xs);
+}
+
+.meal-guidance-note {
+    padding: 8px 11px;
+
+    font-size: 13px;
+    line-height: 1.55;
+
+    background: var(--alert-bg);
+    color: var(--alert-fg);
+    border: 1px solid var(--alert-border);
+    border-left-width: 3px;
+    border-radius: var(--r-xs);
+}
+
+.meal-guidance-note p {
+    margin: 0;
+}
+
+.meal-guidance-note p + p {
+    margin-top: 8px;
+}
+
+.plan-adjustment-note {
+    padding: 8px 11px;
+
+    font-size: 13px;
+    line-height: 1.55;
+
+    background: var(--green-light);
+    color: #2F4F44;
+    border: 1px solid var(--border-green);
+    border-left: 3px solid var(--green);
+    border-radius: var(--r-xs);
+}
+
+.plan-adjustment-note p {
+    margin: 0 0 8px;
+}
+
+.plan-adjustment-header {
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.plan-adjustment-group {
+    margin-top: 10px;
+}
+
+.plan-adjustment-group h5 {
+    margin: 0 0 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--green-dark);
+}
+
+.plan-adjustment-day {
+    margin-bottom: 8px;
+}
+
+.plan-adjustment-day-label {
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.plan-adjustment-slot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    padding: 6px 10px;
+    margin-bottom: 4px;
+
+    font-size: 12.5px;
+
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: var(--r-xs);
+}
+
+.plan-adjustment-slot-label {
+    text-transform: capitalize;
+}
+
+.plan-adjustment-slot-values {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.nutrition-card,
+.diet-plan-card {
+    width: 100%;
+}
+
+.nutrition-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nutrition-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 0;
+    padding-left: 17px;
+    max-width: 82ch;
+}
+
+.nutrition-list li {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text);
+}
+
+.nutrition-list li::marker {
+    color: var(--green);
+}
+
+.nutrition-tip-label {
+    display: block;
+    margin-bottom: 4px;
+
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--warn-fg);
+    opacity: 0.75;
+}
+
+.nutrition-tip p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.nutrition-tip p + p {
+    margin-top: 6px;
+}
+
+.diet-plan-card {
+    gap: 0;
+    padding: 14px 0 0;
+    overflow: hidden;
+}
+
+.diet-plan-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 16px 10px;
+}
+
+.diet-plan-badge {
+    padding: 5px 11px;
+
+    font-size: 11.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-transform: capitalize;
+
+    background: var(--green-light);
+    color: var(--green-deep);
+    border-radius: var(--r-pill);
+}
+
+.diet-adjusted-tag,
+.diet-logged-tag {
+    margin-left: 8px;
+    padding: 2px 8px;
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+
+    border-radius: var(--r-pill);
+}
+
+.diet-adjusted-tag {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+.diet-logged-tag {
+    background: #E8EEF5;
+    color: var(--primary);
+}
+
+.diet-macros-label {
+    margin: 12px 0 6px;
+
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.diet-macros-label:first-of-type {
+    margin-top: 0;
+}
+
+.diet-macros-label strong {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--text);
+}
+
+.diet-plan-subtitle {
+    padding: 0 16px 10px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--muted);
+    border-bottom: 1px solid #EEF3EF;
+}
+
+.diet-day {
+    border-bottom: 1px solid #EEF3EF;
+}
+
+.diet-day:last-child {
+    border-bottom: none;
+}
+
+.diet-day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    padding: 10px 16px;
+
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--primary);
     cursor: pointer;
-
-    outline: none;
-    box-shadow: none;
-
-    -webkit-tap-highlight-color: transparent;
+    transition: background 0.2s ease;
 }
 
-.speak-btn:hover,
-.speak-btn:focus,
-.speak-btn:active {
-    background: transparent;
-    outline: none;
-    box-shadow: none;
-}
-.meal-log-card{
-
-    background:#ffffff;
-
-    border-radius:18px;
-
-    padding:12px;
-
-    border:1px solid #E6EEE3;
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:10px;
-
+.diet-day-header:hover {
+    background: var(--surface-2);
 }
 
-.meal-log-header{
-
-    color:#2E7D32;
-
-    font-size:16px;
-
-    font-weight:700;
-
+.diet-chevron {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    font-size: 15px;
+    color: var(--green);
+    transition: transform 0.25s ease;
 }
 
-.meal-name{
-
-    font-size:16px;
-
-    font-weight:600;
-
-    color:#1F3A5F;
-
+.diet-chevron.open {
+    transform: rotate(180deg);
 }
 
-.meal-type-badge{
-
-    width:fit-content;
-
-    background:#E8F2E8;
-
-    color:#4F7C82;
-
-    padding:4px 10px;
-
-    border-radius:30px;
-
-    font-size:1px;
-
-    font-weight:600;
-
+.diet-day-content {
+    padding: 0 12px 12px;
+    animation: fadeIn 0.22s ease;
 }
 
-.meal-portion-row{
+.diet-meal {
+    margin-top: 8px;
+    overflow: hidden;
 
-    width:fit-content;
-
-    background:#F1F6EE;
-
-    color:#3F5D47;
-
-    padding:5px 11px;
-
-    border-radius:12px;
-
-    font-size:13px;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:6px;
-
+    background: var(--surface-2);
+    border: 1px solid #E9F0E9;
+    border-radius: var(--r-sm);
 }
 
-.macro-grid{
+.diet-meal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
 
-    display:grid;
+    padding: 9px 12px;
 
-    grid-template-columns:repeat(2,1fr);
-
-    gap:11px;
-
+    font-size: 13.5px;
+    font-weight: 600;
+    text-transform: capitalize;
+    color: var(--green-deep);
+    cursor: pointer;
+    transition: background 0.2s ease;
 }
 
-.macro-box{
-
-    background:#F7FAF6;
-
-    border-radius:14px;
-
-    padding:10px;
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-    gap:4px;
-
-    text-align:center;
-
+.diet-meal-header:hover {
+    background: #EDF5EE;
 }
 
-.macro-box strong{
-
-    font-size:12px;
-
-    color:#1F3A5F;
-
+.diet-meal-content {
+    padding: 11px 12px;
+    background: var(--surface);
+    border-top: 1px solid #E9F0E9;
+    animation: fadeIn 0.22s ease;
 }
 
-.macro-box span{
-
-    font-size:13px;
-
-    color:#666;
-
+.diet-meal-content h4 {
+    margin: 0 0 8px;
+    font-size: 15px;
+    color: var(--primary);
 }
 
-.meal-success{
-
-    background:#EDF8ED;
-
-    color:#2E7D32;
-
-    padding:6px;
-
-    border-radius:12px;
-
-    font-weight:600;
-    font-size: 11;
-    text-align:center;
-
+.diet-meal-content p {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--muted);
 }
 
-.meal-estimated-note{
-
-    background:#FBF5E9;
-
-    color:#8A6D1D;
-
-    border-left:4px solid #E8C468;
-
-    padding:8px 12px;
-
-    border-radius:10px;
-
-    font-size:12.5px;
-
-    line-height:1.5;
-
+.diet-macros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
 }
 
+.diet-plan-question,
+.diet-plan-saved-badge {
+    margin: 10px 16px 14px;
+    padding: 9px 12px;
 
-.nutrition-card{
+    font-size: 13.5px;
+    font-weight: 600;
+    text-align: center;
 
-    background:#ffffff;
-
-    border-radius:18px;
-
-    padding:14px;
-
-    border:1px solid #E6EEE3;
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:14px;
-
+    border-radius: var(--r-xs);
 }
 
-.nutrition-title{
-
-    font-size:20px;
-
-    font-weight:700;
-
-    color:#1F3A5F;
-
-    border-bottom:1px solid #EDF2ED;
-
-    padding-bottom:10px;
-
+.diet-plan-question {
+    background: var(--surface-2);
+    color: var(--green-deep);
+    border: 1px solid var(--border-green);
+    border-left: 3px solid var(--green);
 }
 
-.nutrition-section{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:10px;
-
+.diet-plan-saved-badge {
+    background: var(--ok-bg);
+    color: var(--ok-fg);
+    border: 1px solid var(--ok-border);
+    border-left: 3px solid #7BAE7F;
 }
 
-.nutrition-section-title{
-
-    font-size:15px;
-
-    font-weight:700;
-
-    color:#2E7D32;
-
+.profile-tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
-.nutrition-section-body{
+.profile-tag {
+    padding: 5px 11px;
 
-    display:flex;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-transform: capitalize;
 
-    flex-direction:column;
-
-    gap:8px;
-
+    background: var(--green-light);
+    color: var(--green-deep);
+    border-radius: var(--r-pill);
 }
 
-.nutrition-item{
-
-    background:#F8FBF8;
-
-    border-left:4px solid #ADC5AB;
-
-    border-radius:10px;
-
-    padding:10px 14px;
-
-    line-height:1.6;
-
-    font-size:14px;
-
-    color:#2B2B2B;
-
+.profile-tag.warn {
+    background: var(--warn-bg);
+    color: var(--warn-fg);
 }
 
-
-.diet-plan-card{
-    width:100%;
-    max-width:500px;
-    background:#ffffff;
-    border-radius:18px;
-    border:1px solid #dce9de;
-    overflow:hidden;
-    margin-top:8px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.06);
+.profile-update-note {
+    margin: 0;
+    max-width: 82ch;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--text);
 }
 
-.diet-plan-header{
-    background:linear-gradient(135deg,#7fb38a,#6aa874);
-    color:white;
-    font-size:18px;
-    font-weight:700;
-    padding:14px 18px;
+.chat-progress-main {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 4px 0;
 }
 
-.diet-plan-subtitle{
-    padding:10px 18px;
-    color:#5d6f63;
-    font-size:13px;
-    border-bottom:1px solid #eef3ef;
+.chat-progress-remaining {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
-
-.diet-day{
-    border-bottom:1px solid #edf3ee;
+.chat-progress-remaining strong {
+    font-size: 21px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    color: var(--green-deep);
 }
 
-.diet-day:last-child{
-    border-bottom:none;
+.chat-progress-remaining span {
+    font-size: 12.5px;
+    color: var(--muted);
 }
 
-.diet-day-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:14px 18px;
-    cursor:pointer;
-    font-weight:600;
-    color:#2f4734;
-    transition:.25s;
+.chat-progress-macros {
+    display: flex;
+    gap: 8px;
 }
 
-.diet-day-header:hover{
-    background:#f5faf6;
+.chat-progress-macro {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+
+    padding: 10px 6px;
+
+    background: var(--surface-2);
+    border: 1px solid #EDF2EB;
+    border-radius: var(--r-sm);
 }
 
-.diet-day-content{
-    padding:0 14px 14px;
-    animation:fadeIn .25s ease;
+.chat-progress-macro span {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--primary);
 }
 
-
-.diet-meal{
-    background:#f9fcfa;
-    border-radius:12px;
-    margin-top:10px;
-    border:1px solid #e6efe7;
-    overflow:hidden;
+.chat-progress-macro small {
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
 }
 
-.diet-meal-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:12px 15px;
-    cursor:pointer;
-    font-weight:600;
-    color:#38553f;
-    transition:.25s;
+.calorie-status-banner {
+    padding: 8px 10px;
+
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+
+    border-radius: var(--r-xs);
 }
 
-.diet-meal-header:hover{
-    background:#eef7f0;
+.calorie-status-banner.ok {
+    background: var(--ok-bg);
+    color: var(--ok-fg);
 }
 
-.diet-meal-content{
-    padding:15px;
-    border-top:1px solid #e6efe7;
-    animation:fadeIn .25s ease;
+.calorie-status-banner.over {
+    background: var(--danger-bg);
+    color: #B23B34;
 }
 
-.diet-meal-content h4{
-    margin:0 0 8px;
-    font-size:16px;
-    color:#2c4631;
+.meal-history-chat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    max-height: 340px;
+    overflow-y: auto;
+    padding: 0 16px 4px;
 }
 
-.diet-meal-content p{
-    margin:0;
-    font-size:13px;
-    line-height:1.6;
-    color:#6d7d71;
+.meal-history-chat-list::-webkit-scrollbar {
+    width: 6px;
 }
 
-
-.diet-macros{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-    margin-top:15px;
+.meal-history-chat-list::-webkit-scrollbar-thumb {
+    background: #DDE3DC;
+    border-radius: var(--r-pill);
 }
 
-.diet-macros span{
-    background:white;
-    border:1px solid #dde9df;
-    border-radius:10px;
-    text-align:center;
-    padding:8px;
-    font-size:13px;
-    font-weight:600;
-    color:#3f5d47;
-}
-.diet-plan-question{
-    margin:18px;
-    padding:14px;
-    background:#f5faf6;
-    border-left:4px solid #7fb38a;
-    border-radius:10px;
-    font-weight:600;
-    color:#35523c;
-    text-align:center;
+.meal-history-chat-card {
+    gap: 0;
+    padding: 14px 0;
 }
 
+.meal-history-chat-card .ai-empty-state {
+    padding: 14px 16px;
+}
 
-@keyframes fadeIn{
+.meal-history-date-group {
+    display: flex;
+    flex-direction: column;
+}
 
-    from{
-        opacity:0;
-        transform:translateY(-5px);
+.meal-history-date-label {
+    padding-bottom: 8px;
+    margin-bottom: 2px;
+
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+
+    border-bottom: 1px solid var(--border);
+}
+
+.meal-history-chat-row {
+    padding: 9px 0;
+    border-bottom: 1px solid #F1F1EC;
+}
+
+.meal-history-date-group .meal-history-chat-row:last-child {
+    border-bottom: none;
+}
+
+.meal-history-chat-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.meal-history-chat-top h4 {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    text-transform: capitalize;
+    color: var(--primary);
+}
+
+.meal-history-chat-top-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.meal-history-delete-btn {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 10px;
+    color: var(--faint);
+
+    background: var(--surface-3);
+    border-radius: 50%;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.meal-history-delete-btn:hover {
+    background: var(--danger);
+    color: #fff;
+}
+
+.meal-history-chat-time {
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--faint);
+}
+
+.meal-history-chat-portion {
+    margin: 3px 0 0;
+    font-size: 12.5px;
+    color: var(--muted);
+}
+
+.meal-history-chat-macros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 3px 9px;
+
+    font-size: 11.5px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+
+    border-radius: var(--r-pill);
+}
+
+.chip.cal {
+    background: #F1F6EE;
+    color: var(--green-deep);
+}
+
+.chip.protein {
+    background: #E3F0EF;
+    color: #23867B;
+}
+
+.chip.carbs {
+    background: #FBF0DA;
+    color: #B9861F;
+}
+
+.chip.fat {
+    background: #FBE7E5;
+    color: #C1544C;
+}
+
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+
+    background: rgba(22, 41, 74, 0.42);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    animation: fadeIn 0.2s ease;
+}
+
+.confirm-box {
+    width: 100%;
+    max-width: 360px;
+
+    padding: 26px 24px 22px;
+
+    text-align: center;
+
+    background: var(--cream);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-lg);
+    animation: bubbleIn 0.22s ease;
+}
+
+.confirm-box p {
+    margin: 0 0 20px;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--text);
+}
+
+.confirm-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.cancel-btn,
+.confirm-delete-btn {
+    flex: 1;
+    height: 44px;
+    padding: 0 20px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    border-radius: var(--r-md);
+    transition: background 0.2s ease, transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.cancel-btn {
+    color: var(--text-soft);
+    background: var(--surface-3);
+}
+
+.cancel-btn:hover {
+    background: #E5E9E3;
+}
+
+.confirm-delete-btn {
+    color: #fff;
+    background: var(--grad-danger);
+    box-shadow: 0 6px 14px rgba(217, 83, 79, 0.26);
+}
+
+.confirm-delete-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 9px 18px rgba(217, 83, 79, 0.34);
+}
+
+.confirm-delete-btn:active {
+    transform: translateY(0);
+}
+
+.calorie-alert-box {
+    max-width: 460px;
+    max-height: 82vh;
+    overflow-y: auto;
+    text-align: left;
+}
+
+.calorie-alert-header,
+.conflict-alert-header,
+.plan-adjustment-alert-header,
+.daily-reminder-header {
+    margin-bottom: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.calorie-alert-header {
+    color: var(--alert-fg);
+}
+
+.calorie-alert-figures {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.calorie-alert-figure-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+
+    padding: 10px 12px;
+
+    background: var(--alert-bg);
+    border: 1px solid var(--alert-border);
+    border-radius: var(--r-sm);
+}
+
+.calorie-alert-total {
+    font-size: 16px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--primary);
+}
+
+.calorie-alert-over {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #C1544C;
+}
+
+.calorie-alert-guidance,
+.conflict-alert-guidance {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.calorie-alert-guidance p,
+.conflict-alert-guidance p {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+}
+
+.calorie-alert-dismiss {
+    background: linear-gradient(135deg, #E8935C, #C1712F);
+    box-shadow: 0 6px 14px rgba(232, 147, 92, 0.28);
+}
+
+.calorie-alert-dismiss:hover {
+    box-shadow: 0 9px 18px rgba(232, 147, 92, 0.36);
+}
+
+.conflict-alert-box,
+.plan-adjustment-alert-box {
+    max-width: 380px;
+    text-align: left;
+}
+
+.conflict-alert-header {
+    color: #B23B34;
+}
+
+.conflict-alert-reason {
+    padding: 10px 13px;
+    margin-bottom: 14px;
+
+    font-size: 13.5px;
+    font-weight: 700;
+    text-align: center;
+
+    background: var(--danger-bg);
+    color: #8A231D;
+    border: 1px solid var(--danger-border);
+    border-radius: var(--r-sm);
+}
+
+.conflict-alert-disclaimer {
+    padding: 9px 11px;
+    margin-bottom: 20px;
+
+    font-size: 12px;
+    font-style: italic;
+    line-height: 1.5;
+
+    background: #F7F5F0;
+    color: var(--muted);
+    border-radius: var(--r-xs);
+}
+
+.plan-adjustment-alert-header {
+    color: var(--green-dark);
+}
+
+.plan-adjustment-alert-message {
+    margin: 0 0 20px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+}
+
+.plan-adjustment-alert-dismiss {
+    background: var(--grad-brand);
+    box-shadow: 0 6px 14px rgba(107, 142, 122, 0.28);
+}
+
+.plan-adjustment-alert-dismiss:hover {
+    box-shadow: 0 9px 18px rgba(107, 142, 122, 0.36);
+}
+
+.daily-reminder-box {
+    max-width: 380px;
+    text-align: left;
+}
+
+.daily-reminder-header {
+    color: var(--green-dark);
+}
+
+.daily-reminder-message {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.daily-reminder-message p {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+}
+
+.daily-reminder-dismiss {
+    background: var(--grad-brand);
+    box-shadow: 0 6px 14px rgba(107, 142, 122, 0.28);
+}
+
+.daily-reminder-dismiss:hover {
+    box-shadow: 0 9px 18px rgba(107, 142, 122, 0.36);
+}
+
+@media (max-width: 768px) {
+
+    .assistant-container {
+        padding: 0;
     }
 
-    to{
-        opacity:1;
-        transform:translateY(0);
+    .chat-card {
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
     }
 
-}
-
-.mobile-sidebar-toggle {
-    display: none;
-}
-
-.mobile-sidebar-overlay {
-    display: none;
-}
-
-@media(max-width:1000px){
-
-    .assistant-container{
-
-        height:auto;
-
-        overflow:visible;
-
+    .chat-card-header {
+        padding: 14px 18px;
     }
 
-
-    .assistant-layout{
-
-        grid-template-columns:1fr;
-
-        height:auto;
-
+    .chat-card-header h2 {
+        font-size: 16px;
     }
 
-
-    .chat-card{
-
-        height:650px;
-
+    .chat-container {
+        gap: 14px;
+        padding: 18px 16px;
     }
 
-
-    .assistant-sidebar{
-
-        height:auto;
-
+    .chat-message {
+        max-width: 88%;
+        padding: 11px 15px;
+        font-size: 14.5px;
     }
 
-
-    .progress-card-wrapper,
-    .meal-history-wrapper{
-
-        flex:none;
-
-        height:400px;
-
+    .chat-message.ai:has(.ai-card) {
+        max-width: 100%;
     }
 
-}
-
-
-@media(max-width:768px){
-
-    .assistant-container{
-
-        width:100%;
-
-        margin:0;
-
-        height:calc(100vh - var(--navbar-height));
-
-        overflow:hidden;
-
+    .ai-plain-reply {
+        font-size: 14.5px;
     }
 
-
-    .assistant-layout{
-
-        display:block;
-
-        height:100%;
-
-        position:relative;
-
-        overflow:hidden;
-
+    .ai-card {
+        padding: 12px 13px;
+        gap: 9px;
     }
 
-
-    .chat-card-header{
-
-        padding:22px;
-
+    .ai-card-header {
+        font-size: 14.5px;
     }
 
-
-    .chat-card-header h2{
-
-        font-size:22px;
-
+    .ai-card-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
     }
 
-
-    .chat-container{
-
-        padding:20px;
-
+    .diet-plan-card {
+        padding: 12px 0 0;
     }
 
-
-    .chat-message{
-
-        max-width:90%;
-
+    .meal-history-chat-card {
+        padding: 12px 0;
     }
 
-
-    .input-section{
-
-        flex-direction:row;
-
-        flex-wrap:nowrap;
-
-        padding:14px 16px;
-
-        gap:10px;
-
+    .diet-plan-card-header {
+        flex-wrap: wrap;
+        row-gap: 8px;
+        padding: 0 14px 10px;
     }
 
+    .diet-plan-subtitle {
+        padding: 0 14px 10px;
+        font-size: 13px;
+    }
 
-    .input-section input[type="text"]{
+    .diet-day-header {
+        padding: 12px 14px;
+        font-size: 14px;
+    }
 
-        width:auto;
+    .meal-history-chat-list {
+        padding: 0 14px 4px;
+    }
 
-        flex:1;
+    .ai-stat-grid,
+    .meal-log-card .ai-stat-grid,
+    .nutrition-card .ai-stat-grid,
+    .profile-update-card .ai-stat-grid,
+    .profile-snapshot-card .ai-stat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 
-        min-width:0;
+    .ai-stat-value {
+        font-size: 14px;
+    }
 
+    .meal-name,
+    .diet-meal-content h4 {
+        font-size: 15px;
+    }
+
+    .profile-tag,
+    .profile-update-note {
+        font-size: 13px;
+    }
+
+    .nutrition-list li,
+    .meal-guidance-note,
+    .plan-adjustment-note,
+    .nutrition-tip p,
+    .calorie-status-banner,
+    .meal-estimated-note,
+    .diet-plan-question,
+    .diet-plan-saved-badge {
+        font-size: 13px;
+    }
+
+    .input-section {
+        padding: 12px 14px;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom));
+        gap: 6px;
+    }
+
+    .input-section input[type="text"] {
+        height: 44px;
+        padding: 0 16px;
+        font-size: 16px;
     }
 
     .upload-btn,
     .mic-btn,
-    .send-btn{
-
-        width:auto;
-        flex-shrink:0;
-
-    }
-    .chat-card{
-
-        height:100%;
-
-        width:100%;
-
-        border-radius:0;
-
-        box-shadow:none;
-
+    .send-btn {
+        width: 38px;
+        height: 38px;
     }
 
-    .diet-plan-card{
-
-        max-width:100%;
-
+    .chat-progress-main {
+        gap: 14px;
     }
 
-    .nutrition-card,
-    .meal-log-card{
-
-        width:100%;
-
-        box-sizing:border-box;
-
+    .chat-progress-macro {
+        padding: 10px 4px;
     }
 
-    .assistant-sidebar{
-
-        position:fixed;
-        top:var(--navbar-height);
-        right:0;
-        width:82%;
-        max-width:340px;
-        height:calc(100vh - var(--navbar-height));
-
-        background:var(--cream);
-
-        padding:18px 16px;
-        box-sizing:border-box;
-
-        gap:18px;
-        overflow-y:auto;
-
-        transform:translateX(100%);
-        transition:transform 0.3s ease;
-
-        z-index:999;
-
-        box-shadow:-10px 0 30px rgba(31,58,95,0.25);
-
-    }
-
-    .assistant-sidebar.mobile-open{
-
-        transform:translateX(0);
-
-    }
-
-    .progress-card-wrapper,
-    .meal-history-wrapper{
-
-        flex:none;
-        height:auto;
-        max-height:46vh;
-        overflow-y:auto;
-
-    }
-
-    .mobile-sidebar-overlay{
-
-        display:block;
-        position:fixed;
-        top:var(--navbar-height);
-        left:0;
-        right:0;
-        bottom:0;
-        background:rgba(31,58,95,0);
-        pointer-events:none;
-        transition:background 0.3s ease;
-        z-index:998;
-
-    }
-
-    .mobile-sidebar-overlay.active{
-
-        background:rgba(31,58,95,0.35);
-        pointer-events:auto;
-
-    }
-
-    .mobile-sidebar-toggle{
-
-        display:flex;
-        align-items:center;
-        justify-content:center;
-
-        position:fixed;
-        top:50%;
-        right:0;
-        transform:translateY(-50%);
-
-        width:30px;
-        height:60px;
-
-        border:none;
-        border-radius:20px 0 0 20px;
-
-        background:linear-gradient(135deg,#6B8E7A,#4F7C82);
-        color:white;
-        font-size:16px;
-
-        box-shadow:-4px 0 14px rgba(31,58,95,0.25);
-
-        z-index:1000;
-        cursor:pointer;
-
-        transition:right 0.3s ease;
-
-    }
-
-    .mobile-sidebar-toggle.open{
-
-        right:82%;
-
+    .confirm-box {
+        padding: 22px 18px 18px;
     }
 
 }
 
+@media (max-width: 420px) {
 
-@media(max-width:480px){
+    .ai-stat-box {
+        min-width: 0;
+    }
 
-    .mobile-sidebar-toggle.open{
-
-        right:85%;
-
+    .chat-progress-macros {
+        gap: 6px;
     }
 
 }

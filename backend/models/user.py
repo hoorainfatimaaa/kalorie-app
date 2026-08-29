@@ -26,7 +26,13 @@ class User(db.Model):
     dietary_preferences = db.Column(db.Text)
 
     allergies = db.Column(db.Text)
+
+    medical_condition = db.Column(db.Text)
     activity_level = db.Column(db.String(100))
+
+    country = db.Column(db.String(100))
+
+    region = db.Column(db.String(100))
 
     created_at = db.Column(
         db.DateTime,

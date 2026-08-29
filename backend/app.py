@@ -1,3 +1,5 @@
+import time
+from sqlalchemy.exc import OperationalError
 from flask import Flask
 from flask_cors import CORS
 from config import Config
@@ -7,13 +9,12 @@ from routes.auth import auth
 from flask_jwt_extended import JWTManager
 from routes.chat import chat
 from models.meal import Meal
-from routes.progress import progress
 from models.chat_message import ChatMessage
 from flask import send_from_directory
-from routes.profile import profile
-from routes.meals import meals
 from models.diet_plan import DietPlan
-from routes.diet_plan import diet
+from models.conversation_summary import ConversationSummary
+from models.user_memory import UserMemory
+from models.password_reset import PasswordResetToken
 app = Flask(__name__)
 
 app.config.from_object(Config)
@@ -25,15 +26,18 @@ db.init_app(app)
 jwt = JWTManager(app)
 app.register_blueprint(auth)
 app.register_blueprint(chat)
-app.register_blueprint(progress)
-app.register_blueprint(profile)
-app.register_blueprint(meals)
-app.register_blueprint(diet)
 @app.route("/uploads/<filename>")
 def uploaded_file(filename):
     return send_from_directory("uploads", filename)
 with app.app_context():
-    db.create_all()
+    for attempt in range(5):
+        try:
+            db.create_all()
+            break
+        except OperationalError:
+            if attempt == 4:
+                raise
+            time.sleep(2 ** attempt)
 
 @app.route("/")
 def home():

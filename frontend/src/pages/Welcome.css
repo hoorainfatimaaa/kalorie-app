@@ -1,206 +1,184 @@
 .welcome-page {
+    position: relative;
+
     min-height: 100vh;
+    min-height: 100dvh;
     width: 100%;
-    background-image: url("../assets/images/bg_image.jpg");
-    background-size: cover;
-    background-position: center;
+
     display: flex;
     align-items: center;
-    padding: 0 8%;
+
+    padding: 48px clamp(20px, 7vw, 110px);
 }
 
-.hero-content {
-    max-width: 750px;
-    display: grid;
-    grid-template-columns: 60px auto; 
-    column-gap: 70px;
-    row-gap: 18px;
-    align-items: center;
+.welcome-page .hero-content {
+    position: relative;
+
+    width: 100%;
+    max-width: 640px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+
+    animation: heroIn 0.5s ease both;
 }
 
-
-.logo {
-    grid-column: 1;
-    grid-row: 1;
-    width: 50px;
-    height: 50px;
+.welcome-page .logo {
+    width: 66px;
+    height: 66px;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 14px rgba(31, 58, 95, 0.2));
 }
 
-.hero-content h1 {
-    grid-column: 2;
-    grid-row: 1;
+.welcome-page h1 {
     margin: 0;
-    font-size: 60px;
-    line-height: 1.05;
+    font-size: clamp(34px, 5.2vw, 56px);
     font-weight: 700;
-    color: #1F3A5F;
-    text-align: left;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+
+    color: var(--primary);
 }
 
 .hero-text {
-    grid-column: 2;
-    grid-row: 2;
-    max-width: 560px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
 }
-.welcome-description {
-    width: 500px;
-    text-align: left;
-    margin: 0;
-    color: #262525;
-    margin-bottom: 30px;
 
-    font-size: 18px;     
-    line-height: 1.8;     
+.welcome-description {
+    width: 100%;
+    max-width: 510px;
+    margin: 0;
+
+    font-size: clamp(15px, 1.5vw, 17px);
+    line-height: 1.7;
+
+    color: var(--text);
 }
+
 .button-row {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 18px;
+    gap: 14px;
     width: 100%;
+    max-width: 440px;
 }
 
 .button-row a {
-    text-decoration: none;
     flex: 1;
+    display: block;
 }
 
-button {
+.welcome-page button {
     width: 100%;
-    padding: 16px 34px;
-    font-size: 18px;
+    padding: 15px 26px;
+
+    font-size: 15.5px;
     font-weight: 600;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s;
-    margin: 0;
+    letter-spacing: 0.01em;
+
+    border: 2px solid transparent;
+    border-radius: var(--r-md);
+
+    transition: background 0.2s ease, border-color 0.2s ease,
+        color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-button.primary {
-    background: #1F3A5F;
-    color: white;
+.welcome-page button.primary {
+    background: var(--grad-brand);
+    color: #fff;
+    box-shadow: var(--sh-md);
 }
 
-button.primary:hover {
-    background: #16294A;
+.welcome-page button.primary:hover {
+    background: linear-gradient(135deg, #5F8470 0%, #416C72 100%);
+    transform: translateY(-2px);
+    box-shadow: var(--sh-lg);
 }
 
-button.secondary {
-    background: transparent;
-    border: 2px solid #1F3A5F;
-    color: #1F3A5F;
+.welcome-page button.secondary {
+    background: var(--surface);
+    border-color: var(--primary);
+    color: var(--primary);
+    box-shadow: var(--sh-sm);
 }
 
-button.secondary:hover {
-    background: rgba(31,58,95,0.08);
+.welcome-page button.secondary:hover {
+    background: var(--primary);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: var(--sh-md);
 }
 
-@media (max-width: 1024px) {
+.welcome-page button:active {
+    transform: translateY(0);
+}
 
-    .welcome-page {
-        padding: 0 6%;
-        justify-content: center;
+@keyframes heroIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
     }
-
-    .hero-content {
-        max-width: 650px;
-        column-gap: 40px;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
-
-    .hero-content h1 {
-        font-size: 48px;
-    }
-
-    .welcome-description {
-        width: 100%;
-        max-width: 500px;
-    }
-
 }
 
 @media (max-width: 768px) {
 
     .welcome-page {
-        padding: 40px 24px;
+        align-items: center;
         justify-content: center;
-        align-items: center;
+        padding: 32px 18px;
     }
 
-    .hero-content {
-        display: flex;
-        flex-direction: column;
+    .welcome-page .hero-content {
+        max-width: 480px;
         align-items: center;
         text-align: center;
-        gap: 20px;
-        max-width: 100%;
+        gap: 18px;
     }
 
-    .logo {
-        width: 70px;
-        height: 70px;
-    }
-
-    .hero-content h1 {
-        font-size: 38px;
-        text-align: center;
-        line-height: 1.2;
+    .welcome-page .logo {
+        width: 62px;
+        height: 62px;
     }
 
     .hero-text {
-        width: 100%;
-        max-width: 100%;
+        gap: 26px;
     }
 
     .welcome-description {
-        width: 100%;
         max-width: 100%;
-        text-align: center;
-        font-size: 16px;
-        line-height: 1.7;
-        margin-bottom: 25px;
     }
 
     .button-row {
         flex-direction: column;
-        gap: 15px;
+        max-width: 100%;
+        gap: 12px;
     }
 
-    .button-row a {
-        width: 100%;
-    }
-
-    button {
-        padding: 15px;
+    .welcome-page button {
+        padding: 15px 22px;
         font-size: 16px;
     }
 
 }
 
-
 @media (max-width: 480px) {
 
     .welcome-page {
-        padding: 25px 18px;
+        padding: 24px 14px;
     }
 
-    .logo {
-        width: 60px;
-        height: 60px;
-    }
-
-    .hero-content h1 {
-        font-size: 30px;
-    }
-
-    .welcome-description {
-        font-size: 15px;
-        line-height: 1.6;
-    }
-
-    button {
-        font-size: 15px;
-        padding: 14px;
+    .welcome-page .logo {
+        width: 54px;
+        height: 54px;
     }
 
 }
