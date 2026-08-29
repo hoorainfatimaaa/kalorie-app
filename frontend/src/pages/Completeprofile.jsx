@@ -1,6 +1,32 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Completeprofile.css";
+import { API_URL } from "../config";
+
+const COUNTRIES = [
+    "Afghanistan", "Albania", "Algeria", "Argentina", "Armenia", "Australia",
+    "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Belarus", "Belgium",
+    "Bolivia", "Bosnia and Herzegovina", "Brazil", "Bulgaria", "Cambodia",
+    "Cameroon", "Canada", "Chile", "China", "Colombia", "Costa Rica",
+    "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Dominican Republic",
+    "Ecuador", "Egypt", "El Salvador", "Estonia", "Ethiopia", "Finland",
+    "France", "Georgia", "Germany", "Ghana", "Greece", "Guatemala",
+    "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia",
+    "Iran", "Iraq", "Ireland", "Israel", "Italy", "Ivory Coast", "Jamaica",
+    "Japan", "Jordan", "Kazakhstan", "Kenya", "Kuwait", "Kyrgyzstan", "Laos",
+    "Latvia", "Lebanon", "Libya", "Lithuania", "Luxembourg", "Malaysia",
+    "Maldives", "Mali", "Malta", "Mexico", "Moldova", "Mongolia", "Morocco",
+    "Myanmar", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Nigeria",
+    "North Korea", "North Macedonia", "Norway", "Oman", "Pakistan", "Panama",
+    "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar",
+    "Romania", "Russia", "Rwanda", "Saudi Arabia", "Senegal", "Serbia",
+    "Singapore", "Slovakia", "Slovenia", "Somalia", "South Africa",
+    "South Korea", "Spain", "Sri Lanka", "Sudan", "Sweden", "Switzerland",
+    "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Tunisia",
+    "Turkey", "Turkmenistan", "Uganda", "Ukraine",
+    "United Arab Emirates", "United Kingdom", "United States", "Uruguay",
+    "Uzbekistan", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+];
 
 function CompleteProfile() {
 
@@ -14,7 +40,10 @@ function CompleteProfile() {
     activity_level: "",
     fitness_goal: "",
     dietary_preferences: "",
-    allergies: ""
+    allergies: "",
+    medical_condition: "",
+    country: "",
+    region: ""
 });
 
     const [successMessage, setSuccessMessage] = useState("");
@@ -23,10 +52,13 @@ function CompleteProfile() {
 
     const handleChange = (e) => {
 
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        const { name, value } = e.target;
+
+        setFormData((previous) => ({
+            ...previous,
+            [name]: value,
+            ...(name === "country" ? { region: "" } : {})
+        }));
 
         setSuccessMessage("");
         setErrorMessage("");
@@ -44,7 +76,7 @@ function CompleteProfile() {
 
             const token = localStorage.getItem("token");
 
-            const response = await fetch("https://kalorie-app.onrender.com/complete-profile", {
+            const response = await fetch(`${API_URL}/complete-profile`, {
 
                 method: "PUT",
 
@@ -61,7 +93,10 @@ function CompleteProfile() {
                 activity_level: formData.activity_level,
                 fitness_goal: formData.fitness_goal,
                 dietary_preferences: formData.dietary_preferences,
-                allergies: formData.allergies
+                allergies: formData.allergies,
+                medical_condition: formData.medical_condition,
+                country: formData.country,
+                region: formData.region
                 })
             });
 
@@ -79,7 +114,7 @@ function CompleteProfile() {
 
             } else {
 
-                setErrorMessage(data.message || data.msg || "Failed to update profile.");
+                setErrorMessage(data.error || data.message || data.msg || "Failed to update profile.");
 
             }
 
@@ -234,26 +269,81 @@ function CompleteProfile() {
 
                     <div className="complete-profile-form-group">
 
-                        <label>Dietary Preferences (Optional)</label>
+                        <label>Country</label>
+
+                        <select
+                            name="country"
+                            value={formData.country}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Select Country</option>
+                            {COUNTRIES.map((country) => (
+                                <option key={country} value={country}>
+                                    {country}
+                                </option>
+                            ))}
+                        </select>
+
+                    </div>
+
+                    {formData.country && (
+
+                        <div className="complete-profile-form-group">
+
+                            <label>Region / State / Province</label>
+
+                            <input
+                                type="text"
+                                name="region"
+                                placeholder="e.g. Punjab, California, Lombardy"
+                                value={formData.region}
+                                onChange={handleChange}
+                                required
+                            />
+
+                        </div>
+
+                    )}
+
+                    <div className="complete-profile-form-group">
+
+                        <label>Dietary Preferences</label>
 
                         <textarea
                             name="dietary_preferences"
-                            placeholder="e.g. Vegetarian, Vegan, Halal"
+                            placeholder="e.g. Vegetarian, Vegan, Halal — or None"
                             value={formData.dietary_preferences}
                             onChange={handleChange}
+                            required
                         />
 
                     </div>
 
                     <div className="complete-profile-form-group">
 
-                        <label>Allergies (Optional)</label>
+                        <label>Allergies</label>
 
                         <textarea
                             name="allergies"
-                            placeholder="e.g. Peanuts, Dairy"
+                            placeholder="e.g. Peanuts, Dairy — or None"
                             value={formData.allergies}
                             onChange={handleChange}
+                            required
+                        />
+
+                    </div>
+
+                    <div className="complete-profile-form-group">
+
+                        <label>Medical / Dietary Condition</label>
+
+                        <textarea
+                            name="medical_condition"
+                            placeholder="e.g. Diabetes, Hypertension — or None"
+                            value={formData.medical_condition}
+                            onChange={handleChange}
+                            required
                         />
 
                     </div>

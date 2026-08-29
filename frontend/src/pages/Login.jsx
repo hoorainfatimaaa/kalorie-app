@@ -2,6 +2,8 @@ import { useState } from "react";
 import "./Login.css";
 import logo from "../assets/images/logo.svg";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../config";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 function Login() {
 
@@ -15,6 +17,7 @@ function Login() {
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
 
@@ -37,7 +40,7 @@ function Login() {
 
         try {
 
-            const response = await fetch("https://kalorie-app.onrender.com/login", {
+            const response = await fetch(`${API_URL}/login`, {
 
                 method: "POST",
 
@@ -115,14 +118,29 @@ function Login() {
 
                     <label>Password</label>
 
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Enter your password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        required
-                    />
+                    <div className="password-field">
+
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            placeholder="Enter your password"
+                            minLength={8}
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <button
+                            type="button"
+                            className="password-toggle"
+                            onClick={() => setShowPassword(!showPassword)}
+                            aria-label={showPassword ? "Hide password" : "Show password"}
+                            title={showPassword ? "Hide password" : "Show password"}
+                        >
+                            {showPassword ? <FiEyeOff /> : <FiEye />}
+                        </button>
+
+                    </div>
 
                 </div>
 

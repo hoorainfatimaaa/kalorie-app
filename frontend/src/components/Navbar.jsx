@@ -1,10 +1,38 @@
-import { NavLink } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { FiLogOut } from "react-icons/fi";
 import logo from "../assets/images/logo.svg";
 import "./Navbar.css";
 
 function Navbar() {
 
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+    useEffect(() => {
+
+        if (!showLogoutConfirm) {
+            return;
+        }
+
+        const onKeyDown = (e) => {
+            if (e.key === "Escape") {
+                setShowLogoutConfirm(false);
+            }
+        };
+
+        window.addEventListener("keydown", onKeyDown);
+
+        return () => window.removeEventListener("keydown", onKeyDown);
+
+    }, [showLogoutConfirm]);
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+    };
+
     return (
+
+        <>
 
         <nav className="navbar">
 
@@ -24,58 +52,65 @@ function Navbar() {
 
             <div className="navbar-links">
 
-
-                <NavLink
-                    to="/ai-assistant"
-                    className={({ isActive }) =>
-                        isActive ? "nav-link active-link" : "nav-link"
-                    }
-                >
-                    Home
-                </NavLink>
-
-
                 <div className="navbar-right">
 
-    <div className="nav-profile-dropdown">
-
-        <button className="nav_profile-btn" title="nav-Profile">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-            </svg>
-        </button>
-
-        <div className="nav-dropdown-content">
-
-            <NavLink
-                to="/profile"
-                className="dropdown-item"
-            >
-                My Profile
-            </NavLink>
-
-            <button
-                className="nav-dropdown-item logout-item"
-                onClick={() => {
-
-                    localStorage.removeItem("token");
-                    window.location.href = "/login";
-
-                }}
-            >
-                Logout
-            </button>
-
-        </div>
-
-    </div>
+    <button
+        className="nav-logout-btn"
+        title="Logout"
+        onClick={() => setShowLogoutConfirm(true)}
+    >
+        <FiLogOut />
+    </button>
 
 </div>
 
             </div>
 
         </nav>
+
+        {showLogoutConfirm && (
+
+            <div
+                className="logout-overlay"
+                onClick={() => setShowLogoutConfirm(false)}
+            >
+
+                <div
+                    className="logout-box"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Confirm logout"
+                    onClick={(e) => e.stopPropagation()}
+                >
+
+                    <p>Do you want to log out?</p>
+
+                    <div className="logout-buttons">
+
+                        <button
+                            className="logout-cancel-btn"
+                            onClick={() => setShowLogoutConfirm(false)}
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            className="logout-confirm-btn"
+                            onClick={handleLogout}
+                            autoFocus
+                        >
+                            Log Out
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        )}
+
+        </>
 
     );
 

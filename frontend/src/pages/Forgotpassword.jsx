@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./Forgotpassword.css";
 import logo from "../assets/images/logo.svg";
 import { Link } from "react-router-dom";
+import { API_URL } from "../config";
 
 function ForgotPassword() {
 
@@ -28,15 +29,13 @@ function ForgotPassword() {
 
        e.preventDefault();
 
-    console.log("Forgot Password button clicked!");
-
     setLoading(true);
     setSuccessMessage("");
     setErrorMessage("");
 
         try {
 
-            const response = await fetch("https://kalorie-app.onrender.com/forgot-password", {
+            const response = await fetch(`${API_URL}/forgot-password`, {
 
                 method: "POST",
 

@@ -95,13 +95,9 @@ def calculate_macro_goals(user):
 
     fat_goal = (calorie_goal * 0.25) / 9
 
-
-
     protein_calories = protein_goal * 4
 
     fat_calories = fat_goal * 9
-
-
 
     remaining_calories = (
         calorie_goal
@@ -110,6 +106,18 @@ def calculate_macro_goals(user):
     )
 
     carbs_goal = remaining_calories / 4
+
+    condition = (getattr(user, "medical_condition", None) or "").lower()
+
+    if "diabet" in condition:
+
+        max_carb_calories = calorie_goal * 0.35
+        carb_calories = carbs_goal * 4
+
+        if carb_calories > max_carb_calories:
+            excess_calories = carb_calories - max_carb_calories
+            carbs_goal = max_carb_calories / 4
+            protein_goal += excess_calories / 4
 
 
     return {

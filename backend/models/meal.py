@@ -43,6 +43,11 @@ class Meal(db.Model):
     nullable=True
 )
 
+    meal_type = db.Column(
+    db.String(20),
+    nullable=True
+)
+
     is_estimated = db.Column(
     db.Boolean,
     default=True

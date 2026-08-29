@@ -2,6 +2,8 @@ import {useState} from "react";
 import "./Signup.css";
 import logo from "../assets/images/logo.svg";
 import {Link, useNavigate} from "react-router-dom";
+import { API_URL } from "../config";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 function Signup() {
 
@@ -16,6 +18,8 @@ function Signup() {
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -31,6 +35,11 @@ function Signup() {
 
     setSuccessMessage("");
     setErrorMessage("");
+
+    if (formData.password.length < 8) {
+      setErrorMessage("Password must be at least 8 characters long.");
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setErrorMessage("Passwords do not match.");
@@ -62,7 +71,7 @@ if (fullName.length > 50) {
 }
 
     try {
-      const response = await fetch("https://kalorie-app.onrender.com/signup", {
+      const response = await fetch(`${API_URL}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -156,26 +165,58 @@ if (fullName.length > 50) {
 
         <div className="form-group">
           <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Create a password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+          <div className="password-field">
+
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Create a password"
+              minLength={8}
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              title={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <FiEyeOff /> : <FiEye />}
+            </button>
+
+          </div>
         </div>
 
         <div className="form-group">
           <label>Confirm Password</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm your password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            required
-          />
+          <div className="password-field">
+
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              name="confirmPassword"
+              placeholder="Confirm your password"
+              minLength={8}
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+            />
+
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              aria-label={
+                showConfirmPassword ? "Hide password" : "Show password"
+              }
+              title={showConfirmPassword ? "Hide password" : "Show password"}
+            >
+              {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+            </button>
+
+          </div>
         </div>
 
         {successMessage && (<div 
